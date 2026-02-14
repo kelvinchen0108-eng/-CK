@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>存款小天使CK 🧚‍♀️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #fefeff; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .active-tab { color: #f472b6; border-bottom: 2px solid #f472b6; font-weight: 700; }
+        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px); border: 1px solid rgba(255, 192, 203, 0.2); }
+        .profit-red { color: #eb4d4b; } 
+        .loss-green { color: #2ecc71; }
+        .input-soft { background: #fdfafd; border: 1px solid #f3e8f3; border-radius: 12px; transition: all 0.2s; -webkit-appearance: none; }
+        .input-soft:focus { border-color: #f472b6; outline: none; background: white; box-shadow: 0 0 8px rgba(244, 114, 182, 0.1); }
+        .progress-bar-fill { transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
+    </style>
+</head>
+<body class="text-slate-700 pb-28">
+
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-pink-50 px-6 py-4 flex justify-between items-center">
+        <div>
+            <h1 class="text-lg font-bold bg-gradient-to-r from-pink-400 to-violet-500 bg-clip-text text-transparent">存款小天使CK 🧚‍♀️</h1>
+            <p class="text-[10px] text-slate-400 tracking-widest uppercase">Smart Asset Diary</p>
+        </div>
+        <div class="flex space-x-5 text-sm">
+            <button onclick="showPage('overview')" id="btn-overview" class="pb-1 active-tab">總覽</button>
+            <button onclick="showPage('stocks')" id="btn-stocks" class="pb-1">投資</button>
+            <button onclick="showPage('savings')" id="btn-savings" class="pb-1">存款</button>
+        </div>
+    </nav>
+
+    <main class="p-6 max-w-lg mx-auto space-y-6">
+
+        <section id="overview" class="tab-content active space-y-6">
+            <div class="glass-card p-7 rounded-[2.5rem] shadow-xl shadow-pink-100/40 border border-pink-50">
+                <div class="flex justify-between items-end mb-5">
+                    <div>
+                        <h2 class="text-slate-400 text-xs mb-1">資產達成率</h2>
+                        <div class="text-4xl font-black text-slate-800" id="total-assets">$0</div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-pink-400 font-bold text-lg" id="progress-percent">0%</span>
+                        <p class="text-[10px] text-slate-400">目標: <span id="goal-display">3,000,000</span></p>
+                    </div>
+                </div>
+                <div class="h-4 bg-pink-50/50 rounded-full overflow-hidden border border-pink-100">
+                    <div id="progress-bar" class="progress-bar-fill h-full bg-gradient-to-r from-pink-300 via-rose-400 to-violet-400" style="width: 0%"></div>
+                </div>
+                <button onclick="editGoal()" class="mt-4 text-[10px] text-slate-300 hover:text-pink-400 underline transition">修改目標金額</button>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+                <div class="bg-white p-5 rounded-3xl border border-pink-50 shadow-sm flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] text-slate-400 uppercase tracking-wider">現金存款總額</p>
+                        <p id="total-save-val" class="text-xl font-bold text-violet-500">$0</p>
+                    </div>
+                    <div class="text-2xl">💰</div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white p-5 rounded-3xl border border-pink-50 shadow-sm">
+                        <p class="text-[10px] text-slate-400 mb-1 uppercase">股票市值</p>
+                        <p id="total-stock-mkt" class="text-lg font-bold text-slate-700">$0</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-3xl border border-pink-50 shadow-sm">
+                        <p class="text-[10px] text-slate-400 mb-1 uppercase">未實現損益</p>
+                        <p id="total-stock-profit" class="text-lg font-bold">$0</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="stocks" class="tab-content space-y-4">
+            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-pink-50">
+                <h3 class="font-bold mb-4 text-sm flex items-center gap-2">🌸 紀錄買入股票</h3>
+                <div class="space-y-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input id="s-date" type="date" class="input-soft p-4 text-sm col-span-2">
+                        <input id="s-name" type="text" placeholder="名稱 (如: 2330)" class="input-soft p-4 text-sm col-span-2">
+                        <input id="s-price" type="number" placeholder="買入單價" class="input-soft p-4 text-sm">
+                        <input id="s-qty" type="number" placeholder="買入股數" class="input-soft p-4 text-sm">
+                    </div>
+                    <button onclick="addStock()" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold shadow-lg active:scale-95 transition">加入投資日誌</button>
+                </div>
+            </div>
+            <div id="stock-inventory" class="space-y-4"></div>
+        </section>
+
+        <section id="savings" class="tab-content space-y-4">
+            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-pink-50">
+                <h3 class="font-bold mb-4 text-sm flex items-center gap-2">💎 紀錄存款配置</h3>
+                <div class="space-y-3">
+                    <input id="v-date" type="date" class="input-soft w-full p-4 text-sm">
+                    <input id="v-name" type="text" placeholder="銀行/帳戶名稱" class="input-soft w-full p-4 text-sm">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input id="v-amount" type="number" placeholder="存入金額" class="input-soft p-4 text-sm">
+                        <input id="v-rate" type="number" step="0.01" placeholder="利率 %" class="input-soft p-4 text-sm">
+                    </div>
+                    <button onclick="addSaving()" class="w-full bg-violet-500 text-white py-4 rounded-2xl font-bold shadow-lg active:scale-95 transition">完成存入</button>
+                </div>
+            </div>
+            <div id="saving-list" class="space-y-3"></div>
+        </section>
+
+    </main>
+
+    <div class="fixed bottom-6 left-0 right-0 flex justify-center px-6">
+        <button onclick="clearData()" class="bg-white/80 backdrop-blur border border-pink-100 px-6 py-2 rounded-full text-[10px] text-slate-300 hover:text-red-400 transition shadow-sm uppercase tracking-tighter">
+            重設小天使數據
+        </button>
+    </div>
+
+    <script>
+        // 設定預設日期為今天
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('s-date').value = today;
+        document.getElementById('v-date').value = today;
+
+        let stocks = JSON.parse(localStorage.getItem('ck_stocks_v3')) || {}; 
+        let savings = JSON.parse(localStorage.getItem('ck_savings_v3')) || [];
+        let goal = parseFloat(localStorage.getItem('ck_goal_v3')) || 3000000;
+
+        function showPage(pageId) {
+            document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active-tab'));
+            document.getElementById('btn-' + pageId).classList.add('active-tab');
+            render();
+        }
+
+        function addStock() {
+            const date = document.getElementById('s-date').value;
+            const name = document.getElementById('s-name').value.trim();
+            const price = parseFloat(document.getElementById('s-price').value);
+            const qty = parseInt(document.getElementById('s-qty').value);
+            if (!name || !price || !qty) return alert("請填寫正確資訊");
+
+            if (!stocks[name]) stocks[name] = { trades: [], currentPrice: price };
+            stocks[name].trades.push({ id: Date.now(), date, price, qty });
+            save();
+            document.getElementById('s-name').value = '';
+            document.getElementById('s-price').value = '';
+            document.getElementById('s-qty').value = '';
+        }
+
+        function addSaving() {
+            const date = document.getElementById('v-date').value;
+            const name = document.getElementById('v-name').value;
+            const amount = parseFloat(document.getElementById('v-amount').value);
+            const rate = parseFloat(document.getElementById('v-rate').value);
+            if (!name || !amount) return;
+            savings.push({ id: Date.now(), date, name, amount, rate });
+            save();
+            document.getElementById('v-name').value = '';
+            document.getElementById('v-amount').value = '';
+        }
+
+        function updateCurrentPrice(name, newPrice) {
+            if (stocks[name]) { stocks[name].currentPrice = parseFloat(newPrice); save(); }
+        }
+
+        function deleteTrade(name, id) {
+            stocks[name].trades = stocks[name].trades.filter(t => t.id !== id);
+            if (stocks[name].trades.length === 0) delete stocks[name];
+            save();
+        }
+
+        function editGoal() {
+            const g = prompt("設定存錢目標金額:", goal);
+            if(g) { goal = parseFloat(g); localStorage.setItem('ck_goal_v3', goal); render(); }
+        }
+
+        function save() {
+            localStorage.setItem('ck_stocks_v3', JSON.stringify(stocks));
+            localStorage.setItem('ck_savings_v3', JSON.stringify(savings));
+            render();
+        }
+
+        function render() {
+            let totalStockMktVal = 0;
+            let totalStockCost = 0;
+            let stockHtml = '';
+
+            // 股票渲染 (含時間紀錄)
+            for (let name in stocks) {
+                let s = stocks[name];
+                let sumQty = s.trades.reduce((sum, t) => sum + t.qty, 0);
+                let sumCost = s.trades.reduce((sum, t) => {
+                    const fee = Math.max(20, Math.floor(t.price * t.qty * 0.001425));
+                    return sum + (t.price * t.qty) + fee;
+                }, 0);
+                
+                let avgPrice = sumCost / sumQty;
+                let currentMktVal = s.currentPrice * sumQty;
+                let sellFee = Math.max(20, Math.floor(currentMktVal * 0.001425));
+                let sellTax = Math.floor(currentMktVal * 0.003);
+                let netRevenue = currentMktVal - sellFee - sellTax;
+                let profit = netRevenue - sumCost;
+                let roi = (profit / sumCost) * 100;
+
+                totalStockMktVal += currentMktVal;
+                totalStockCost += sumCost;
+
+                stockHtml += `
+                    <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-pink-50">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h4 class="font-bold text-lg text-slate-800">${name}</h4>
+                                <p class="text-[10px] text-slate-400">總持股: ${sumQty.toLocaleString()} 股</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-[9px] text-slate-400 mb-1">目前市價</div>
+                                <input type="number" value="${s.currentPrice}" onchange="updateCurrentPrice('${name}', this.value)" 
+                                    class="w-20 text-right font-bold text-blue-500 bg-blue-50 rounded-lg px-2 py-1 outline-none text-sm">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 py-3 border-y border-dashed border-pink-50 mb-3">
+                            <div><p class="text-[9px] text-slate-300 uppercase">平均成本</p><p class="font-bold text-slate-600">$${avgPrice.toFixed(2)}</p></div>
+                            <div class="text-right"><p class="text-[9px] text-slate-300 uppercase">未實現損益</p>
+                            <p class="font-bold ${profit >= 0 ? 'profit-red' : 'loss-green'}">${profit >= 0 ? '+' : ''}${Math.round(profit).toLocaleString()}</p></div>
+                        </div>
+                        <div class="space-y-1">
+                            ${s.trades.map(t => `
+                                <div class="flex justify-between text-[10px] text-slate-400 bg-slate-50/50 p-2 rounded-lg">
+                                    <span>📅 ${t.date}</span>
+                                    <span class="font-medium">$${t.price} × ${t.qty}股</span>
+                                    <button onclick="deleteTrade('${name}', ${t.id})" class="text-slate-300 hover:text-red-400 ml-2">✕</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            document.getElementById('stock-inventory').innerHTML = stockHtml || '<p class="text-center text-slate-300 text-sm">尚未加入投資紀錄</p>';
+
+            // 存款渲染 (含時間紀錄)
+            const vTotal = savings.reduce((sum, r) => sum + r.amount, 0);
+            document.getElementById('saving-list').innerHTML = savings.map(r => `
+                <div class="bg-white p-5 rounded-3xl flex justify-between items-center shadow-sm border border-pink-50">
+                    <div>
+                        <div class="text-[9px] text-pink-300 mb-1 font-medium italic">${r.date}</div>
+                        <div class="font-bold text-slate-800">${r.name}</div>
+                        <div class="text-[10px] text-slate-400">利率 ${r.rate}% | 年息 $${Math.round(r.amount * r.rate / 100).toLocaleString()}</div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="text-right font-black text-violet-500">$${r.amount.toLocaleString()}</div>
+                        <button onclick="deleteSaving(${r.id})" class="text-slate-200">✕</button>
+                    </div>
+                </div>
+            `).sort((a,b) => 0).join(''); // 這裡可以加入日期排序
+
+            // 更新主畫面統計
+            const totalAssets = totalStockMktVal + vTotal;
+            const totalProfit = totalStockMktVal - totalStockCost; 
+            const progress = Math.min((totalAssets / goal) * 100, 100);
+
+            document.getElementById('total-assets').innerText = '$' + Math.round(totalAssets).toLocaleString();
+            document.getElementById('total-save-val').innerText = '$' + Math.round(vTotal).toLocaleString();
+            document.getElementById('total-stock-mkt').innerText = '$' + Math.round(totalStockMktVal).toLocaleString();
+            document.getElementById('total-stock-profit').innerText = (totalProfit >= 0 ? '+' : '') + Math.round(totalProfit).toLocaleString();
+            document.getElementById('total-stock-profit').className = `text-lg font-bold ${totalProfit >= 0 ? 'profit-red' : 'loss-green'}`;
+            
+            document.getElementById('goal-display').innerText = goal.toLocaleString();
+            document.getElementById('progress-percent').innerText = progress.toFixed(1) + '%';
+            
+            // 觸發進度條動畫
+            setTimeout(() => {
+                document.getElementById('progress-bar').style.width = progress + '%';
+            }, 100);
+        }
+
+        function deleteSaving(id) { savings = savings.filter(r => r.id !== id); save(); }
+        function clearData() { if(confirm('要清空所有資料嗎？清空後小天使也救不回喔。')) { localStorage.clear(); location.reload(); } }
+
+        render();
+    </script>
+</body>
+</html>
