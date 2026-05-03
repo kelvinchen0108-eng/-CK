@@ -1,282 +1,806 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>存款小天使CK 🧚‍♀️</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #fefeff; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .active-tab { color: #f472b6; border-bottom: 2px solid #f472b6; font-weight: 700; }
-        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px); border: 1px solid rgba(255, 192, 203, 0.2); }
-        .profit-red { color: #eb4d4b; } 
-        .loss-green { color: #2ecc71; }
-        .input-soft { background: #fdfafd; border: 1px solid #f3e8f3; border-radius: 12px; transition: all 0.2s; -webkit-appearance: none; }
-        .input-soft:focus { border-color: #f472b6; outline: none; background: white; box-shadow: 0 0 8px rgba(244, 114, 182, 0.1); }
-        .progress-bar-fill { transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>存款小天使 CK 🧚‍♀️</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;}
+body{font-family:'Noto Sans TC',sans-serif;background:#fefeff;color:#334155;-webkit-text-size-adjust:100%;}
+.tab-content{display:none;}.tab-content.active{display:block;}
+.sub-content{display:none;}.sub-content.active{display:block;}
+.collapse-body{display:none;}.collapse-body.open{display:block;}
+.nav-tab{padding:6px 10px;border-radius:999px;font-size:12px;font-weight:500;color:#94a3b8;transition:all .2s;cursor:pointer;border:none;background:none;white-space:nowrap;flex:1;}
+.nav-tab.active{background:white;color:#7c3aed;box-shadow:0 2px 8px rgba(124,58,237,.15);font-weight:700;}
+.sub-tab{padding:5px 14px;border-radius:999px;font-size:12px;font-weight:500;color:#94a3b8;cursor:pointer;border:none;background:none;transition:all .2s;flex:1;}
+.sub-tab.active{background:rgba(244,114,182,.12);color:#db2777;font-weight:700;}
+.card{background:white;border-radius:20px;border:1px solid rgba(244,114,182,.1);box-shadow:0 2px 12px rgba(168,85,247,.05);}
+.card-hero{background:linear-gradient(135deg,#fff0f9 0%,#f5eeff 100%);border:1px solid rgba(244,114,182,.15);border-radius:28px;}
+.inp{background:#fafafa;border:1.5px solid #f1f0f5;border-radius:12px;padding:11px 14px;font-family:'Noto Sans TC',sans-serif;font-size:14px;color:#334155;width:100%;transition:all .2s;-webkit-appearance:none;appearance:none;}
+.inp:focus{outline:none;border-color:#a855f7;box-shadow:0 0 0 3px rgba(168,85,247,.1);}
+.inp::placeholder{color:#cbd5e1;}
+select.inp{cursor:pointer;}
+.btn{border-radius:12px;padding:12px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:14px;width:100%;cursor:pointer;transition:all .2s;border:none;display:block;text-align:center;}
+.btn:active{transform:scale(.97);}
+.btn-violet{background:linear-gradient(135deg,#a855f7,#7c3aed);color:white;box-shadow:0 4px 16px rgba(168,85,247,.3);}
+.btn-pink{background:linear-gradient(135deg,#f472b6,#ec4899);color:white;box-shadow:0 4px 16px rgba(244,114,182,.3);}
+.btn-outline{background:transparent;border:1.5px solid #e2d9f3;border-radius:10px;padding:8px 14px;font-family:'Noto Sans TC',sans-serif;font-size:12px;color:#7c3aed;cursor:pointer;transition:all .2s;display:inline-block;}
+.btn-outline:hover{background:#f5eeff;}
+.tgl-group{display:flex;background:#f5f3ff;border-radius:10px;padding:3px;gap:3px;}
+.tgl{flex:1;padding:7px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:none;color:#94a3b8;transition:all .2s;font-family:'Noto Sans TC',sans-serif;}
+.tgl.active{background:white;color:#7c3aed;box-shadow:0 1px 4px rgba(0,0,0,.1);}
+.tgl.buy.active{color:#059669;}.tgl.sell.active{color:#dc2626;}
+.prog-track{height:10px;background:rgba(244,114,182,.1);border-radius:999px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,#f472b6,#a855f7);border-radius:999px;transition:width 1.4s cubic-bezier(.22,1,.36,1);}
+.tag{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:600;}
+.tg-green{background:rgba(16,185,129,.1);color:#059669;}
+.tg-red{background:rgba(239,68,68,.1);color:#dc2626;}
+.tg-violet{background:rgba(168,85,247,.1);color:#7c3aed;}
+.tg-gold{background:rgba(245,158,11,.12);color:#d97706;}
+.tg-pink{background:rgba(244,114,182,.12);color:#db2777;}
+.c-profit{color:#dc2626;}.c-loss{color:#059669;}
+.drow{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:13px;border-bottom:1px solid #f8f7fd;}
+.drow:last-child{border-bottom:none;}
+.trade-item{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:#fafafa;border-radius:9px;font-size:11px;color:#64748b;gap:4px;flex-wrap:wrap;}
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.4);backdrop-filter:blur(8px);z-index:200;display:none;align-items:flex-end;justify-content:center;}
+.modal-ov.open{display:flex;}
+.modal-sheet{background:white;border-radius:28px 28px 0 0;padding:24px 20px 48px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;animation:slideUp .3s cubic-bezier(.22,1,.36,1);}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.modal-handle{width:36px;height:4px;background:#e2e8f0;border-radius:999px;margin:0 auto 18px;}
+.stitle{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#94a3b8;margin-bottom:10px;}
+.hr{height:1px;background:#f1f5f9;margin:10px 0;}
+.sav-card{background:white;border-radius:18px;border:1px solid rgba(168,85,247,.12);padding:16px 18px;}
+.sav-card.expiring{border-color:rgba(245,158,11,.4);background:linear-gradient(135deg,#fffbeb,#fff);}
+.sav-card.expired{border-color:rgba(239,68,68,.3);background:linear-gradient(135deg,#fff5f5,#fff);}
+.dt-btn{flex:1;padding:10px 8px;border-radius:10px;font-size:12px;cursor:pointer;border:1.5px solid #e2e8f0;background:#fafafa;color:#64748b;transition:all .2s;text-align:left;font-family:'Noto Sans TC',sans-serif;}
+.dt-btn.ac-cash{background:white;border-color:#f472b6;color:#db2777;}
+.dt-btn.ac-stk{background:white;border-color:#a855f7;color:#7c3aed;}
+.tr-btn{padding:6px 14px;border-radius:999px;font-size:12px;font-weight:600;color:#94a3b8;border:1.5px solid #e2d9f3;background:white;cursor:pointer;transition:all .2s;}
+.tr-btn.active{background:#f5eeff;color:#7c3aed;border-color:#a855f7;}
+.mode-card{border:2px solid #e2e8f0;border-radius:16px;padding:14px;cursor:pointer;transition:all .2s;background:white;}
+.mode-card.selected{border-color:#a855f7;background:#f5eeff;}
+.cat-chip{display:flex;align-items:center;gap:6px;padding:8px 10px;background:#fafafa;border-radius:10px;border:1px solid #f1f0f5;font-size:12px;margin-bottom:6px;}
+#toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(10px);background:#1e1b4b;color:white;padding:9px 20px;border-radius:999px;font-size:13px;opacity:0;transition:all .3s;z-index:999;white-space:nowrap;pointer-events:none;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:#e2d9f3;border-radius:3px;}
+input[type=number]::-webkit-inner-spin-button{opacity:.4;}
+input[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:pointer;}
+</style>
 </head>
-<body class="text-slate-700 pb-28">
+<body class="pb-28">
+<div id="toast"></div>
 
-    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-pink-50 px-6 py-4 flex justify-between items-center">
-        <div>
-            <h1 class="text-lg font-bold bg-gradient-to-r from-pink-400 to-violet-500 bg-clip-text text-transparent">存款小天使CK 🧚‍♀️</h1>
-            <p class="text-[10px] text-slate-400 tracking-widest uppercase">Smart Asset Diary</p>
-        </div>
-        <div class="flex space-x-5 text-sm">
-            <button onclick="showPage('overview')" id="btn-overview" class="pb-1 active-tab">總覽</button>
-            <button onclick="showPage('stocks')" id="btn-stocks" class="pb-1">投資</button>
-            <button onclick="showPage('savings')" id="btn-savings" class="pb-1">存款</button>
-        </div>
-    </nav>
-
-    <main class="p-6 max-w-lg mx-auto space-y-6">
-
-        <section id="overview" class="tab-content active space-y-6">
-            <div class="glass-card p-7 rounded-[2.5rem] shadow-xl shadow-pink-100/40 border border-pink-50">
-                <div class="flex justify-between items-end mb-5">
-                    <div>
-                        <h2 class="text-slate-400 text-xs mb-1">資產達成率</h2>
-                        <div class="text-4xl font-black text-slate-800" id="total-assets">$0</div>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-pink-400 font-bold text-lg" id="progress-percent">0%</span>
-                        <p class="text-[10px] text-slate-400">目標: <span id="goal-display">3,000,000</span></p>
-                    </div>
-                </div>
-                <div class="h-4 bg-pink-50/50 rounded-full overflow-hidden border border-pink-100">
-                    <div id="progress-bar" class="progress-bar-fill h-full bg-gradient-to-r from-pink-300 via-rose-400 to-violet-400" style="width: 0%"></div>
-                </div>
-                <button onclick="editGoal()" class="mt-4 text-[10px] text-slate-300 hover:text-pink-400 underline transition">修改目標金額</button>
-            </div>
-
-            <div class="grid grid-cols-1 gap-4">
-                <div class="bg-white p-5 rounded-3xl border border-pink-50 shadow-sm flex justify-between items-center">
-                    <div>
-                        <p class="text-[10px] text-slate-400 uppercase tracking-wider">現金存款總額</p>
-                        <p id="total-save-val" class="text-xl font-bold text-violet-500">$0</p>
-                    </div>
-                    <div class="text-2xl">💰</div>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-white p-5 rounded-3xl border border-pink-50 shadow-sm">
-                        <p class="text-[10px] text-slate-400 mb-1 uppercase">股票市值</p>
-                        <p id="total-stock-mkt" class="text-lg font-bold text-slate-700">$0</p>
-                    </div>
-                    <div class="bg-white p-5 rounded-3xl border border-pink-50 shadow-sm">
-                        <p class="text-[10px] text-slate-400 mb-1 uppercase">未實現損益</p>
-                        <p id="total-stock-profit" class="text-lg font-bold">$0</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="stocks" class="tab-content space-y-4">
-            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-pink-50">
-                <h3 class="font-bold mb-4 text-sm flex items-center gap-2">🌸 紀錄買入股票</h3>
-                <div class="space-y-3">
-                    <div class="grid grid-cols-2 gap-3">
-                        <input id="s-date" type="date" class="input-soft p-4 text-sm col-span-2">
-                        <input id="s-name" type="text" placeholder="名稱 (如: 2330)" class="input-soft p-4 text-sm col-span-2">
-                        <input id="s-price" type="number" placeholder="買入單價" class="input-soft p-4 text-sm">
-                        <input id="s-qty" type="number" placeholder="買入股數" class="input-soft p-4 text-sm">
-                    </div>
-                    <button onclick="addStock()" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold shadow-lg active:scale-95 transition">加入投資日誌</button>
-                </div>
-            </div>
-            <div id="stock-inventory" class="space-y-4"></div>
-        </section>
-
-        <section id="savings" class="tab-content space-y-4">
-            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-pink-50">
-                <h3 class="font-bold mb-4 text-sm flex items-center gap-2">💎 紀錄存款配置</h3>
-                <div class="space-y-3">
-                    <input id="v-date" type="date" class="input-soft w-full p-4 text-sm">
-                    <input id="v-name" type="text" placeholder="銀行/帳戶名稱" class="input-soft w-full p-4 text-sm">
-                    <div class="grid grid-cols-2 gap-3">
-                        <input id="v-amount" type="number" placeholder="存入金額" class="input-soft p-4 text-sm">
-                        <input id="v-rate" type="number" step="0.01" placeholder="利率 %" class="input-soft p-4 text-sm">
-                    </div>
-                    <button onclick="addSaving()" class="w-full bg-violet-500 text-white py-4 rounded-2xl font-bold shadow-lg active:scale-95 transition">完成存入</button>
-                </div>
-            </div>
-            <div id="saving-list" class="space-y-3"></div>
-        </section>
-
-    </main>
-
-    <div class="fixed bottom-6 left-0 right-0 flex justify-center px-6">
-        <button onclick="clearData()" class="bg-white/80 backdrop-blur border border-pink-100 px-6 py-2 rounded-full text-[10px] text-slate-300 hover:text-red-400 transition shadow-sm uppercase tracking-tighter">
-            重設小天使數據
-        </button>
+<nav class="sticky top-0 z-50" style="background:rgba(254,254,255,.93);backdrop-filter:blur(16px);border-bottom:1px solid rgba(244,114,182,.08);">
+  <div class="max-w-lg mx-auto px-3 py-3">
+    <div class="flex justify-between items-center mb-2">
+      <div>
+        <h1 class="text-[15px] font-black" style="background:linear-gradient(135deg,#f472b6,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">存款小天使 CK 🧚‍♀️</h1>
+        <p class="text-[9px] text-slate-400 tracking-widest">SMART ASSET DIARY</p>
+      </div>
+      <div id="alert-badge" style="display:none" class="text-[11px] font-bold text-amber-500 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-100"></div>
     </div>
+    <div class="flex gap-0.5 bg-slate-50 p-1 rounded-full overflow-x-auto">
+      <button onclick="showPage('overview')" id="btn-overview" class="nav-tab active">總覽</button>
+      <button onclick="showPage('invest')" id="btn-invest" class="nav-tab">投資</button>
+      <button onclick="showPage('savings')" id="btn-savings" class="nav-tab">存款</button>
+      <button onclick="showPage('budget')" id="btn-budget" class="nav-tab">規劃</button>
+      <button onclick="showPage('trends')" id="btn-trends" class="nav-tab">趨勢</button>
+      <button onclick="showPage('reminders')" id="btn-reminders" class="nav-tab">提醒</button>
+    </div>
+  </div>
+</nav>
 
-    <script>
-        // 設定預設日期為今天
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('s-date').value = today;
-        document.getElementById('v-date').value = today;
+<main class="max-w-lg mx-auto p-3 space-y-4">
 
-        let stocks = JSON.parse(localStorage.getItem('ck_stocks_v3')) || {}; 
-        let savings = JSON.parse(localStorage.getItem('ck_savings_v3')) || [];
-        let goal = parseFloat(localStorage.getItem('ck_goal_v3')) || 3000000;
+<!-- OVERVIEW -->
+<section id="overview" class="tab-content active space-y-4">
+  <div class="card-hero p-6">
+    <div class="flex justify-between items-start mb-1">
+      <div><p class="text-[10px] text-slate-400 mb-1">總資產</p><div class="text-4xl font-black text-slate-800" id="ov-total">$0</div></div>
+      <div class="text-right"><span class="text-2xl font-black text-violet-500" id="ov-pct">0%</span><p class="text-[10px] text-slate-400 mt-0.5">目標 <span id="ov-goal">3,000,000</span></p></div>
+    </div>
+    <div class="prog-track my-4"><div id="prog-bar" class="prog-fill" style="width:0%"></div></div>
+    <div class="flex justify-between items-end">
+      <div><p class="text-[9px] text-slate-400">預計達標日期</p><p id="ov-eta" class="text-sm font-bold text-violet-600">—</p></div>
+      <button onclick="openModal('modal-goal')" class="text-[10px] text-slate-400 hover:text-pink-400 underline transition">修改目標</button>
+    </div>
+  </div>
+  <div class="grid grid-cols-2 gap-3">
+    <div class="card p-4"><p class="text-[9px] text-slate-400 uppercase tracking-wider mb-1">現金存款</p><p id="ov-sav" class="text-xl font-black text-violet-600">$0</p><p class="text-[9px] text-slate-400 mt-1">年息 <span id="ov-ann-int" class="text-emerald-500 font-bold">$0</span></p></div>
+    <div class="card p-4"><p class="text-[9px] text-slate-400 uppercase tracking-wider mb-1">股票市值</p><p id="ov-stk-mkt" class="text-xl font-black text-slate-700">$0</p><p class="text-[9px] text-slate-400 mt-1">持股 <span id="ov-stk-cnt" class="font-bold">0</span> 支</p></div>
+    <div class="card p-4"><p class="text-[9px] text-slate-400 uppercase tracking-wider mb-1">未實現損益</p><p id="ov-unreal" class="text-xl font-black">$0</p></div>
+    <div class="card p-4"><p class="text-[9px] text-slate-400 uppercase tracking-wider mb-1">月均被動收入</p><p id="ov-passive" class="text-xl font-black text-pink-500">$0</p><p class="text-[9px] text-slate-400 mt-1">股息＋利息</p></div>
+  </div>
+  <div class="card p-5">
+    <p class="stitle">資產配置</p>
+    <div class="flex items-center gap-4">
+      <div style="width:130px;height:130px;flex-shrink:0;"><canvas id="chart-alloc"></canvas></div>
+      <div id="alloc-legend" class="flex-1 space-y-2"></div>
+    </div>
+  </div>
+  <div class="card p-5"><p class="stitle">資產歷史走勢</p><div style="position:relative;height:150px;"><canvas id="chart-hist"></canvas></div></div>
+  <div id="ov-alerts" class="space-y-2"></div>
+</section>
 
-        function showPage(pageId) {
-            document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active-tab'));
-            document.getElementById('btn-' + pageId).classList.add('active-tab');
-            render();
-        }
+<!-- INVEST -->
+<section id="invest" class="tab-content space-y-4">
+  <div class="flex gap-1 p-1 rounded-full" style="background:#fff0f9;">
+    <button onclick="showSub('inv','holdings')" id="isub-holdings" class="sub-tab active">持倉</button>
+    <button onclick="showSub('inv','trade')" id="isub-trade" class="sub-tab">新增交易</button>
+    <button onclick="showSub('inv','dividends')" id="isub-dividends" class="sub-tab">股息紀錄</button>
+  </div>
+  <div id="inv-holdings" class="sub-content active space-y-4">
+    <div class="card p-4"><div class="grid grid-cols-3 gap-2 text-center">
+      <div><p class="text-[9px] text-slate-400">總投入成本</p><p id="s-cost" class="font-bold text-slate-700 text-sm">$0</p></div>
+      <div><p class="text-[9px] text-slate-400">目前市值</p><p id="s-mkt" class="font-bold text-slate-700 text-sm">$0</p></div>
+      <div><p class="text-[9px] text-slate-400">已實現損益</p><p id="s-real" class="font-bold text-sm">$0</p></div>
+    </div></div>
+    <div id="stock-list" class="space-y-4"></div>
+  </div>
+  <div id="inv-trade" class="sub-content">
+    <div class="card p-5 space-y-3">
+      <h3 class="font-bold text-sm">🌸 新增交易紀錄</h3>
+      <div class="tgl-group"><button onclick="setTT('buy')" id="tt-buy" class="tgl buy active">買入 📈</button><button onclick="setTT('sell')" id="tt-sell" class="tgl sell">賣出 📉</button></div>
+      <input id="s-date" type="date" class="inp">
+      <input id="s-name" type="text" placeholder="股票代號 (如: 2330)" class="inp">
+      <div class="grid grid-cols-2 gap-3">
+        <div><p class="text-[10px] text-slate-400 mb-1 px-1">成交單價</p><input id="s-price" type="number" placeholder="0" class="inp" oninput="calcFee()"></div>
+        <div><p class="text-[10px] text-slate-400 mb-1 px-1">股數</p><input id="s-qty" type="number" placeholder="0" class="inp" oninput="calcFee()"></div>
+      </div>
+      <div id="fee-box" class="rounded-2xl p-3 text-xs space-y-1.5" style="background:#f5eeff;display:none">
+        <div class="flex justify-between text-slate-500"><span>手續費 (0.1425%，最低$20)</span><span id="fp-fee" class="font-bold">$0</span></div>
+        <div class="flex justify-between text-slate-500" id="fp-tax-row" style="display:none"><span>交易稅 (0.3%)</span><span id="fp-tax" class="font-bold">$0</span></div>
+        <div class="hr"></div>
+        <div class="flex justify-between font-bold text-violet-600"><span id="fp-lbl">實際支出</span><span id="fp-tot">$0</span></div>
+      </div>
+      <button onclick="addTrade()" class="btn btn-violet">確認加入日誌</button>
+    </div>
+  </div>
+  <div id="inv-dividends" class="sub-content space-y-4">
+    <div class="card p-5 space-y-3">
+      <h3 class="font-bold text-sm">🌿 新增股息 / 股利</h3>
+      <select id="div-stock" class="inp"><option value="">選擇持股</option></select>
+      <input id="div-date" type="date" class="inp">
+      <div class="rounded-2xl p-3 space-y-2" style="background:#fff0f9;">
+        <p class="text-[9px] font-bold text-pink-400 uppercase tracking-wider mb-1">股息類型說明</p>
+        <div class="flex gap-2">
+          <button onclick="setDivType('cash')" id="dt-cash" class="dt-btn ac-cash"><div class="font-bold text-xs">💰 現金股利</div><div class="text-[10px] text-slate-400 mt-0.5">公司發放現金給股東</div></button>
+          <button onclick="setDivType('stock')" id="dt-stk" class="dt-btn"><div class="font-bold text-xs">📊 股票股利</div><div class="text-[10px] text-slate-400 mt-0.5">配發新股，攤低持倉成本</div></button>
+        </div>
+      </div>
+      <div id="di-cash"><input id="div-amt" type="number" placeholder="現金股利金額（元）" class="inp"></div>
+      <div id="di-stk" style="display:none"><input id="div-shr" type="number" placeholder="配股股數（股）" class="inp"><p class="text-[10px] text-slate-400 mt-1 px-1">✱ 配股股數將自動加入持倉、攤低平均成本</p></div>
+      <button onclick="addDividend()" class="btn btn-pink">記錄股息</button>
+    </div>
+    <div id="div-list" class="space-y-2"></div>
+  </div>
+</section>
 
-        function addStock() {
-            const date = document.getElementById('s-date').value;
-            const name = document.getElementById('s-name').value.trim();
-            const price = parseFloat(document.getElementById('s-price').value);
-            const qty = parseInt(document.getElementById('s-qty').value);
-            if (!name || !price || !qty) return alert("請填寫正確資訊");
+<!-- SAVINGS -->
+<section id="savings" class="tab-content space-y-4">
+  <div class="card p-5 space-y-3">
+    <h3 class="font-bold text-sm">💎 新增存款紀錄</h3>
+    <input id="v-name" type="text" placeholder="銀行 / 帳戶名稱" class="inp">
+    <div class="grid grid-cols-2 gap-3">
+      <div><p class="text-[10px] text-slate-400 mb-1 px-1">存入金額</p><input id="v-amt" type="number" placeholder="0" class="inp" oninput="calcSavPreview()"></div>
+      <div><p class="text-[10px] text-slate-400 mb-1 px-1">年利率 %</p><input id="v-rate" type="number" step="0.001" placeholder="0.000" class="inp" oninput="calcSavPreview()"></div>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <div><p class="text-[10px] text-slate-400 mb-1 px-1">存入日</p><input id="v-start" type="date" class="inp" oninput="calcSavPreview()"></div>
+      <div><p class="text-[10px] text-slate-400 mb-1 px-1">到期日</p><input id="v-end" type="date" class="inp" oninput="calcSavPreview()"></div>
+    </div>
+    <div><p class="text-[10px] text-slate-400 mb-1 px-1">計息方式</p>
+      <div class="tgl-group"><button onclick="setIntType('simple')" id="it-simple" class="tgl active">單利</button><button onclick="setIntType('compound')" id="it-cmpd" class="tgl">複利</button></div>
+    </div>
+    <div id="cmpd-opts" style="display:none">
+      <p class="text-[10px] text-slate-400 mb-1 px-1">複利頻率</p>
+      <select id="v-freq" class="inp" onchange="calcSavPreview()">
+        <option value="1">每年複利 (×1)</option><option value="2">每半年複利 (×2)</option>
+        <option value="4">每季複利 (×4)</option><option value="12" selected>每月複利 (×12)</option>
+        <option value="365">每日複利 (×365)</option>
+      </select>
+    </div>
+    <div id="sav-preview" class="rounded-2xl p-3 text-xs space-y-1.5" style="background:#f5eeff;display:none">
+      <div class="flex justify-between text-slate-500"><span>存款天數</span><span id="sp-days" class="font-bold">—</span></div>
+      <div class="flex justify-between text-slate-500"><span>年化利息</span><span id="sp-ann" class="font-bold text-emerald-500">—</span></div>
+      <div class="flex justify-between text-slate-500"><span>到期利息</span><span id="sp-int" class="font-bold text-emerald-500">—</span></div>
+      <div class="hr"></div>
+      <div class="flex justify-between text-violet-600 font-bold"><span>到期金額</span><span id="sp-tot">—</span></div>
+    </div>
+    <button onclick="addSaving()" class="btn btn-pink">完成存入</button>
+  </div>
+  <div class="card p-4"><div class="grid grid-cols-3 gap-2 text-center">
+    <div><p class="text-[9px] text-slate-400">存款總額</p><p id="sv-total" class="font-bold text-violet-600 text-sm">$0</p></div>
+    <div><p class="text-[9px] text-slate-400">年利息收入</p><p id="sv-annual" class="font-bold text-emerald-500 text-sm">$0</p></div>
+    <div><p class="text-[9px] text-slate-400">即將到期</p><p id="sv-exp" class="font-bold text-amber-500 text-sm">0 個</p></div>
+  </div></div>
+  <div id="saving-list" class="space-y-3"></div>
+</section>
 
-            if (!stocks[name]) stocks[name] = { trades: [], currentPrice: price };
-            stocks[name].trades.push({ id: Date.now(), date, price, qty });
-            save();
-            document.getElementById('s-name').value = '';
-            document.getElementById('s-price').value = '';
-            document.getElementById('s-qty').value = '';
-        }
+<!-- BUDGET -->
+<section id="budget" class="tab-content space-y-4">
+  <div class="flex gap-1 p-1 rounded-full" style="background:#fff0f9;">
+    <button onclick="showSub('bud','mode')" id="bsub-mode" class="sub-tab active">分配模式</button>
+    <button onclick="showSub('bud','analysis')" id="bsub-analysis" class="sub-tab">收入分析</button>
+    <button onclick="showSub('bud','cards')" id="bsub-cards" class="sub-tab">信用卡</button>
+  </div>
+  <div id="bud-mode" class="sub-content active space-y-4">
+    <div class="card p-5 space-y-3">
+      <h3 class="font-bold text-sm">💡 設定月收入</h3>
+      <div class="grid grid-cols-2 gap-3">
+        <div><p class="text-[10px] text-slate-400 mb-1 px-1">薪資收入</p><input id="inc-salary" type="number" placeholder="0" class="inp" oninput="calcBudget()"></div>
+        <div><p class="text-[10px] text-slate-400 mb-1 px-1">其他收入</p><input id="inc-other" type="number" placeholder="0" class="inp" oninput="calcBudget()"></div>
+      </div>
+      <div class="rounded-2xl p-3 text-xs" style="background:#f0fdf4;">
+        <div class="flex justify-between"><span class="text-slate-500">股息收入（自動帶入）</span><span id="inc-div" class="font-bold text-emerald-500">$0/月</span></div>
+        <div class="flex justify-between mt-1"><span class="text-slate-500">利息收入（自動帶入）</span><span id="inc-int" class="font-bold text-emerald-500">$0/月</span></div>
+      </div>
+      <div class="rounded-2xl p-3" style="background:#f5eeff;"><div class="flex justify-between font-bold text-violet-600 text-sm"><span>月收入合計</span><span id="inc-total">$0</span></div></div>
+    </div>
+    <div class="card p-5 space-y-3"><h3 class="font-bold text-sm">📊 選擇分配模式</h3><div id="mode-list" class="space-y-2"></div></div>
+    <div id="budget-result" class="card p-5 space-y-4" style="display:none">
+      <p class="stitle">本月分配建議</p>
+      <div style="position:relative;height:200px;"><canvas id="chart-budget"></canvas></div>
+      <div id="budget-cats" class="space-y-1"></div>
+      <button onclick="openModal('modal-custom-cat')" class="btn-outline w-full text-center block mt-2">＋ 新增自訂分類</button>
+    </div>
+  </div>
+  <div id="bud-analysis" class="sub-content space-y-4">
+    <div class="card p-5"><p class="stitle">被動收入明細</p><div id="passive-detail" class="space-y-1"></div></div>
+    <div class="card p-5"><p class="stitle">收入結構</p><div style="position:relative;height:200px;"><canvas id="chart-income"></canvas></div></div>
+    <div class="card p-5"><p class="stitle">財務自由進度</p><div id="fi-detail"></div></div>
+  </div>
+  <div id="bud-cards" class="sub-content space-y-4">
+    <div class="card p-5 space-y-3">
+      <h3 class="font-bold text-sm">💳 新增信用卡</h3>
+      <input id="cc-name" type="text" placeholder="卡片名稱（如：玉山Ubear卡）" class="inp">
+      <div class="grid grid-cols-2 gap-3">
+        <div><p class="text-[10px] text-slate-400 mb-1 px-1">繳款日（每月幾號）</p><input id="cc-due" type="number" min="1" max="31" placeholder="15" class="inp"></div>
+        <div><p class="text-[10px] text-slate-400 mb-1 px-1">信用額度（選填）</p><input id="cc-limit" type="number" placeholder="0" class="inp"></div>
+      </div>
+      <button onclick="addCard()" class="btn btn-violet">新增信用卡</button>
+    </div>
+    <div id="card-list" class="space-y-3"></div>
+  </div>
+</section>
 
-        function addSaving() {
-            const date = document.getElementById('v-date').value;
-            const name = document.getElementById('v-name').value;
-            const amount = parseFloat(document.getElementById('v-amount').value);
-            const rate = parseFloat(document.getElementById('v-rate').value);
-            if (!name || !amount) return;
-            savings.push({ id: Date.now(), date, name, amount, rate });
-            save();
-            document.getElementById('v-name').value = '';
-            document.getElementById('v-amount').value = '';
-        }
+<!-- TRENDS -->
+<section id="trends" class="tab-content space-y-4">
+  <div class="flex gap-2 flex-wrap">
+    <button onclick="setTR(1)" id="tr-1m" class="tr-btn">1M</button>
+    <button onclick="setTR(3)" id="tr-3m" class="tr-btn">3M</button>
+    <button onclick="setTR(6)" id="tr-6m" class="tr-btn">6M</button>
+    <button onclick="setTR(12)" id="tr-1y" class="tr-btn">1Y</button>
+    <button onclick="setTR(0)" id="tr-all" class="tr-btn active">全部</button>
+  </div>
+  <div class="card p-5"><p class="stitle">淨資產趨勢</p><div style="position:relative;height:170px;"><canvas id="ct-nw"></canvas></div></div>
+  <div class="card p-5"><p class="stitle">存款變化</p><div style="position:relative;height:150px;"><canvas id="ct-sv"></canvas></div></div>
+  <div class="card p-5"><p class="stitle">股票市值趨勢</p><div style="position:relative;height:150px;"><canvas id="ct-stk"></canvas></div></div>
+  <div class="card p-5"><p class="stitle">月均被動收入</p><div style="position:relative;height:150px;"><canvas id="ct-pass"></canvas></div></div>
+</section>
 
-        function updateCurrentPrice(name, newPrice) {
-            if (stocks[name]) { stocks[name].currentPrice = parseFloat(newPrice); save(); }
-        }
+<!-- REMINDERS -->
+<section id="reminders" class="tab-content space-y-4">
+  <div class="card p-5 space-y-3">
+    <h3 class="font-bold text-sm">⏰ 新增自訂提醒</h3>
+    <input id="rem-title" type="text" placeholder="提醒標題" class="inp">
+    <input id="rem-date" type="date" class="inp">
+    <input id="rem-note" type="text" placeholder="備註（選填）" class="inp">
+    <button onclick="addReminder()" class="btn btn-violet">加入提醒</button>
+  </div>
+  <div><p class="stitle">💳 信用卡繳款倒數</p><div id="rem-cards" class="space-y-2"></div></div>
+  <div><p class="stitle">🏦 定存到期倒數</p><div id="rem-sav" class="space-y-2"></div></div>
+  <div class="card p-5"><p class="stitle">🎯 目標進度</p><div id="rem-goal"></div></div>
+  <div><p class="stitle">🔔 自訂提醒</p><div id="rem-custom" class="space-y-2"></div></div>
+</section>
 
-        function deleteTrade(name, id) {
-            stocks[name].trades = stocks[name].trades.filter(t => t.id !== id);
-            if (stocks[name].trades.length === 0) delete stocks[name];
-            save();
-        }
+</main>
 
-        function editGoal() {
-            const g = prompt("設定存錢目標金額:", goal);
-            if(g) { goal = parseFloat(g); localStorage.setItem('ck_goal_v3', goal); render(); }
-        }
+<!-- Bottom bar -->
+<div class="fixed bottom-0 left-0 right-0 z-40" style="background:rgba(254,254,255,.93);backdrop-filter:blur(16px);border-top:1px solid rgba(244,114,182,.08);">
+  <div class="max-w-lg mx-auto px-4 py-2.5 flex justify-between items-center">
+    <button onclick="exportData()" class="text-[11px] text-violet-500 font-bold bg-violet-50 px-3 py-1.5 rounded-full border border-violet-100">⬆️ 匯出備份</button>
+    <label class="text-[11px] text-blue-500 font-bold bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100 cursor-pointer">⬇️ 匯入<input type="file" accept=".json" onchange="importData(this)" style="display:none"></label>
+    <button onclick="clearAll()" class="text-[11px] text-slate-300 hover:text-red-400 transition px-2">重設</button>
+  </div>
+</div>
 
-        function save() {
-            localStorage.setItem('ck_stocks_v3', JSON.stringify(stocks));
-            localStorage.setItem('ck_savings_v3', JSON.stringify(savings));
-            render();
-        }
+<!-- MODAL: Goal -->
+<div id="modal-goal" class="modal-ov">
+  <div class="modal-sheet"><div class="modal-handle"></div>
+    <h3 class="font-bold text-base mb-4">🎯 設定存錢目標</h3>
+    <div class="space-y-3">
+      <div><p class="text-xs text-slate-400 mb-1">目標金額</p><input id="g-amt" type="number" class="inp" placeholder="3000000"></div>
+      <div><p class="text-xs text-slate-400 mb-1">月均儲蓄（用於預測達標日期）</p><input id="g-monthly" type="number" class="inp" placeholder="每月平均存多少"></div>
+      <button onclick="saveGoal()" class="btn btn-violet">儲存目標</button>
+      <button onclick="closeModal('modal-goal')" class="w-full text-center text-slate-400 text-sm py-2">取消</button>
+    </div>
+  </div>
+</div>
 
-        function render() {
-            let totalStockMktVal = 0;
-            let totalStockCost = 0;
-            let stockHtml = '';
+<!-- MODAL: Rollover -->
+<div id="modal-rollover" class="modal-ov">
+  <div class="modal-sheet"><div class="modal-handle"></div>
+    <h3 class="font-bold text-base mb-0.5">🔄 滾存模擬</h3>
+    <p id="roll-name" class="text-xs text-violet-500 mb-4"></p>
+    <div class="space-y-3">
+      <div class="grid grid-cols-2 gap-3">
+        <div><p class="text-xs text-slate-400 mb-1">模擬截止日期</p><input id="roll-end" type="date" class="inp" oninput="runRollover()"></div>
+        <div><p class="text-xs text-slate-400 mb-1">利率 %</p><input id="roll-rate" type="number" step="0.001" class="inp" oninput="runRollover()"></div>
+      </div>
+      <div><p class="text-xs text-slate-400 mb-1">計息方式</p>
+        <div class="tgl-group"><button onclick="setRollIT('simple')" id="ri-s" class="tgl active">單利</button><button onclick="setRollIT('compound')" id="ri-c" class="tgl">複利</button></div>
+      </div>
+      <div id="roll-cmpd-opts" style="display:none">
+        <p class="text-xs text-slate-400 mb-1">複利頻率</p>
+        <select id="roll-freq" class="inp" onchange="runRollover()">
+          <option value="1">每年複利</option><option value="2">每半年複利</option>
+          <option value="4">每季複利</option><option value="12" selected>每月複利</option>
+          <option value="365">每日複利</option>
+        </select>
+      </div>
+      <div id="roll-result"></div>
+      <div style="position:relative;height:150px;"><canvas id="chart-roll"></canvas></div>
+      <button onclick="closeModal('modal-rollover')" class="w-full text-center text-slate-400 text-sm py-2 border-t border-slate-100 mt-2">關閉</button>
+    </div>
+  </div>
+</div>
 
-            // 股票渲染 (含時間紀錄)
-            for (let name in stocks) {
-                let s = stocks[name];
-                let sumQty = s.trades.reduce((sum, t) => sum + t.qty, 0);
-                let sumCost = s.trades.reduce((sum, t) => {
-                    const fee = Math.max(20, Math.floor(t.price * t.qty * 0.001425));
-                    return sum + (t.price * t.qty) + fee;
-                }, 0);
-                
-                let avgPrice = sumCost / sumQty;
-                let currentMktVal = s.currentPrice * sumQty;
-                let sellFee = Math.max(20, Math.floor(currentMktVal * 0.001425));
-                let sellTax = Math.floor(currentMktVal * 0.003);
-                let netRevenue = currentMktVal - sellFee - sellTax;
-                let profit = netRevenue - sumCost;
-                let roi = (profit / sumCost) * 100;
+<!-- MODAL: Card spend -->
+<div id="modal-cc-spend" class="modal-ov">
+  <div class="modal-sheet"><div class="modal-handle"></div>
+    <h3 class="font-bold text-base mb-0.5">💳 更新消費紀錄</h3>
+    <p id="cc-spend-name" class="text-xs text-violet-500 mb-4"></p>
+    <div class="space-y-3">
+      <div><p class="text-xs text-slate-400 mb-1">帳單年月</p><input id="cc-spend-month" type="month" class="inp"></div>
+      <div><p class="text-xs text-slate-400 mb-1">本期消費總額</p><input id="cc-spend-amt" type="number" placeholder="0" class="inp"></div>
+      <div><p class="text-xs text-slate-400 mb-1">應繳金額（留空 = 全額繳清）</p><input id="cc-spend-due-amt" type="number" placeholder="留空代表全額" class="inp"></div>
+      <button onclick="saveCardSpend()" class="btn btn-pink">儲存</button>
+      <button onclick="closeModal('modal-cc-spend')" class="w-full text-center text-slate-400 text-sm py-2">取消</button>
+    </div>
+  </div>
+</div>
 
-                totalStockMktVal += currentMktVal;
-                totalStockCost += sumCost;
+<!-- MODAL: Custom category -->
+<div id="modal-custom-cat" class="modal-ov">
+  <div class="modal-sheet"><div class="modal-handle"></div>
+    <h3 class="font-bold text-base mb-4">＋ 新增自訂分類</h3>
+    <div class="space-y-3">
+      <div><p class="text-xs text-slate-400 mb-1">分類名稱</p><input id="cat-name" type="text" placeholder="飲料錢 / 宵夜 / 藥費..." class="inp"></div>
+      <div><p class="text-xs text-slate-400 mb-1">建議佔比 %</p><input id="cat-pct" type="number" step="0.1" placeholder="5" class="inp"></div>
+      <div><p class="text-xs text-slate-400 mb-1">圖示 Emoji</p><input id="cat-emoji" type="text" placeholder="🧋" class="inp" maxlength="4"></div>
+      <button onclick="addCustomCat()" class="btn btn-violet">加入分類</button>
+      <button onclick="closeModal('modal-custom-cat')" class="w-full text-center text-slate-400 text-sm py-2">取消</button>
+    </div>
+  </div>
+</div>
 
-                stockHtml += `
-                    <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-pink-50">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h4 class="font-bold text-lg text-slate-800">${name}</h4>
-                                <p class="text-[10px] text-slate-400">總持股: ${sumQty.toLocaleString()} 股</p>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-[9px] text-slate-400 mb-1">目前市價</div>
-                                <input type="number" value="${s.currentPrice}" onchange="updateCurrentPrice('${name}', this.value)" 
-                                    class="w-20 text-right font-bold text-blue-500 bg-blue-50 rounded-lg px-2 py-1 outline-none text-sm">
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4 py-3 border-y border-dashed border-pink-50 mb-3">
-                            <div><p class="text-[9px] text-slate-300 uppercase">平均成本</p><p class="font-bold text-slate-600">$${avgPrice.toFixed(2)}</p></div>
-                            <div class="text-right"><p class="text-[9px] text-slate-300 uppercase">未實現損益</p>
-                            <p class="font-bold ${profit >= 0 ? 'profit-red' : 'loss-green'}">${profit >= 0 ? '+' : ''}${Math.round(profit).toLocaleString()}</p></div>
-                        </div>
-                        <div class="space-y-1">
-                            ${s.trades.map(t => `
-                                <div class="flex justify-between text-[10px] text-slate-400 bg-slate-50/50 p-2 rounded-lg">
-                                    <span>📅 ${t.date}</span>
-                                    <span class="font-medium">$${t.price} × ${t.qty}股</span>
-                                    <button onclick="deleteTrade('${name}', ${t.id})" class="text-slate-300 hover:text-red-400 ml-2">✕</button>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-            }
-            document.getElementById('stock-inventory').innerHTML = stockHtml || '<p class="text-center text-slate-300 text-sm">尚未加入投資紀錄</p>';
+<script>
+const K={stocks:'ckas_s',savings:'ckas_sv',goal:'ckas_g',gmonth:'ckas_gm',hist:'ckas_h',rems:'ckas_r',cards:'ckas_c',budget:'ckas_b',income:'ckas_i'};
 
-            // 存款渲染 (含時間紀錄)
-            const vTotal = savings.reduce((sum, r) => sum + r.amount, 0);
-            document.getElementById('saving-list').innerHTML = savings.map(r => `
-                <div class="bg-white p-5 rounded-3xl flex justify-between items-center shadow-sm border border-pink-50">
-                    <div>
-                        <div class="text-[9px] text-pink-300 mb-1 font-medium italic">${r.date}</div>
-                        <div class="font-bold text-slate-800">${r.name}</div>
-                        <div class="text-[10px] text-slate-400">利率 ${r.rate}% | 年息 $${Math.round(r.amount * r.rate / 100).toLocaleString()}</div>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <div class="text-right font-black text-violet-500">$${r.amount.toLocaleString()}</div>
-                        <button onclick="deleteSaving(${r.id})" class="text-slate-200">✕</button>
-                    </div>
-                </div>
-            `).sort((a,b) => 0).join(''); // 這裡可以加入日期排序
+// ===== 資料遷移：自動讀取舊版 key，搬移到新版 key =====
+(function migrate(){
+  // 舊版 key 對應表（涵蓋多個歷史版本）
+  const OLD=[
+    {from:'ckas_stocks_v4',   to:K.stocks,  type:'json'},
+    {from:'ck_stocks_v4',     to:K.stocks,  type:'json'},
+    {from:'ckas_savings_v4',  to:K.savings, type:'json'},
+    {from:'ck_savings_v4',    to:K.savings, type:'json'},
+    {from:'ckas_goal_v4',     to:K.goal,    type:'float'},
+    {from:'ck_goal_v4',       to:K.goal,    type:'float'},
+    {from:'ckas_gmonth_v4',   to:K.gmonth,  type:'float'},
+    {from:'ck_gmonth_v4',     to:K.gmonth,  type:'float'},
+    {from:'ckas_hist_v4',     to:K.hist,    type:'json'},
+    {from:'ck_hist_v4',       to:K.hist,    type:'json'},
+    {from:'ckas_rems_v4',     to:K.rems,    type:'json'},
+    {from:'ck_rems_v4',       to:K.rems,    type:'json'},
+    // 更早版本（無 v4 後綴）
+    {from:'ckas_stocks',      to:K.stocks,  type:'json'},
+    {from:'ckas_savings',     to:K.savings, type:'json'},
+    {from:'ckas_goal',        to:K.goal,    type:'float'},
+    {from:'ckas_gmonth',      to:K.gmonth,  type:'float'},
+    {from:'ckas_hist',        to:K.hist,    type:'json'},
+    {from:'ckas_rems',        to:K.rems,    type:'json'},
+  ];
+  let migrated=false;
+  OLD.forEach(({from,to,type})=>{
+    if(localStorage.getItem(from)!==null && localStorage.getItem(to)===null){
+      localStorage.setItem(to,localStorage.getItem(from));
+      migrated=true;
+    }
+  });
+  if(migrated) console.log('[CK] 舊版資料已自動遷移 ✅');
+})();
 
-            // 更新主畫面統計
-            const totalAssets = totalStockMktVal + vTotal;
-            const totalProfit = totalStockMktVal - totalStockCost; 
-            const progress = Math.min((totalAssets / goal) * 100, 100);
+let stocks=JSON.parse(localStorage.getItem(K.stocks))||{};
+let savings=JSON.parse(localStorage.getItem(K.savings))||[];
+let goal=parseFloat(localStorage.getItem(K.goal))||3000000;
+let goalMonthly=parseFloat(localStorage.getItem(K.gmonth))||0;
+let history=JSON.parse(localStorage.getItem(K.hist))||[];
+let reminders=JSON.parse(localStorage.getItem(K.rems))||[];
+let cards=JSON.parse(localStorage.getItem(K.cards))||[];
+let budgetMode=JSON.parse(localStorage.getItem(K.budget))||{modeId:'5030',customCats:[]};
+let income=JSON.parse(localStorage.getItem(K.income))||{salary:0,other:0};
+let tradeType='buy',divType='cash',intType='simple',rollIT='simple',trendRange=0;
+let curRollSav=null,curCCId=null;
+let cAlloc=null,cHist=null,cNW=null,cSV=null,cSTK=null,cPass=null,cRoll=null,cBudget=null,cIncome=null;
 
-            document.getElementById('total-assets').innerText = '$' + Math.round(totalAssets).toLocaleString();
-            document.getElementById('total-save-val').innerText = '$' + Math.round(vTotal).toLocaleString();
-            document.getElementById('total-stock-mkt').innerText = '$' + Math.round(totalStockMktVal).toLocaleString();
-            document.getElementById('total-stock-profit').innerText = (totalProfit >= 0 ? '+' : '') + Math.round(totalProfit).toLocaleString();
-            document.getElementById('total-stock-profit').className = `text-lg font-bold ${totalProfit >= 0 ? 'profit-red' : 'loss-green'}`;
-            
-            document.getElementById('goal-display').innerText = goal.toLocaleString();
-            document.getElementById('progress-percent').innerText = progress.toFixed(1) + '%';
-            
-            // 觸發進度條動畫
-            setTimeout(() => {
-                document.getElementById('progress-bar').style.width = progress + '%';
-            }, 100);
-        }
+const today=new Date().toISOString().split('T')[0];
+const nowMonth=new Date().toISOString().substring(0,7);
+document.getElementById('s-date').value=today;
+document.getElementById('div-date').value=today;
+document.getElementById('v-start').value=today;
+document.getElementById('rem-date').value=today;
+document.getElementById('cc-spend-month').value=nowMonth;
 
-        function deleteSaving(id) { savings = savings.filter(r => r.id !== id); save(); }
-        function clearData() { if(confirm('要清空所有資料嗎？清空後小天使也救不回喔。')) { localStorage.clear(); location.reload(); } }
+const MODES=[
+  {id:'5030',name:'50/30/20 經典法則',desc:'必要支出50%・享受30%・儲蓄投資20%',cats:[{n:'必要支出',e:'🏠',p:50},{n:'個人享受',e:'🎉',p:30},{n:'儲蓄',e:'💰',p:15},{n:'投資',e:'📈',p:5}]},
+  {id:'agressive',name:'積極存款模式',desc:'強制先存40%＋投資20%，剩下才是生活費',cats:[{n:'儲蓄',e:'💰',p:40},{n:'投資',e:'📈',p:20},{n:'餐飲',e:'🍱',p:20},{n:'交通',e:'🚇',p:10},{n:'娛樂',e:'🎮',p:10}]},
+  {id:'tw-real',name:'台灣薪資實戰版',desc:'月薪3-6萬有租屋壓力',cats:[{n:'房租',e:'🏠',p:30},{n:'餐費',e:'🍱',p:15},{n:'交通',e:'🚇',p:5},{n:'娛樂',e:'🎮',p:10},{n:'儲蓄',e:'💰',p:25},{n:'投資',e:'📈',p:15}]},
+  {id:'fi',name:'財務自由加速版',desc:'極度壓縮支出，目標提早退休',cats:[{n:'投資',e:'📈',p:50},{n:'儲蓄',e:'💰',p:20},{n:'必要生活費',e:'🏠',p:25},{n:'彈性支出',e:'🎲',p:5}]},
+  {id:'custom',name:'自訂模式',desc:'完全自己設定每個分類比例',cats:[{n:'儲蓄',e:'💰',p:30},{n:'投資',e:'📈',p:20},{n:'餐費',e:'🍱',p:20},{n:'交通',e:'🚇',p:10},{n:'娛樂',e:'🎮',p:10},{n:'其他',e:'📦',p:10}]}
+];
+const COLORS=['#a855f7','#f472b6','#60a5fa','#34d399','#fbbf24','#f87171','#8b5cf6','#ec4899','#06b6d4','#10b981'];
 
-        render();
-    </script>
+function showPage(id){
+  document.querySelectorAll('.tab-content').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('btn-'+id).classList.add('active');
+  if(id==='budget'){renderModeList();renderBudget();}
+  if(id==='trends')renderTrends();
+  if(id==='reminders')renderReminders();
+  render();
+}
+function showSub(section,id){
+  const prefix=section+'-';
+  document.querySelectorAll('[id^="'+prefix+'"]').forEach(el=>{el.classList.remove('active');el.style.display='none';});
+  const el=document.getElementById(prefix+id);
+  if(el){el.classList.add('active');el.style.display='block';}
+  const bp=section==='inv'?'isub-':'bsub-';
+  document.querySelectorAll('[id^="'+bp+'"]').forEach(b=>b.classList.remove('active'));
+  document.getElementById(bp+id)?.classList.add('active');
+  if(id==='dividends')fillDivSelect();
+  if(id==='analysis')renderAnalysis();
+  render();
+}
+
+// Fee calc
+const buyFee=(p,q)=>Math.max(20,Math.floor(p*q*0.001425));
+const sellFee=(p,q)=>Math.max(20,Math.floor(p*q*0.001425));
+const sellTax=(p,q)=>Math.floor(p*q*0.003);
+
+function setTT(t){tradeType=t;document.getElementById('tt-buy').classList.toggle('active',t==='buy');document.getElementById('tt-sell').classList.toggle('active',t==='sell');calcFee();}
+function calcFee(){
+  const p=parseFloat(document.getElementById('s-price').value),q=parseInt(document.getElementById('s-qty').value);
+  const box=document.getElementById('fee-box');
+  if(!p||!q){box.style.display='none';return;}
+  box.style.display='block';
+  const fee=tradeType==='buy'?buyFee(p,q):sellFee(p,q),tax=tradeType==='sell'?sellTax(p,q):0;
+  const total=tradeType==='buy'?p*q+fee:p*q-fee-tax;
+  document.getElementById('fp-fee').textContent='$'+fee.toLocaleString();
+  document.getElementById('fp-tax').textContent='$'+tax.toLocaleString();
+  document.getElementById('fp-tax-row').style.display=tradeType==='sell'?'flex':'none';
+  document.getElementById('fp-lbl').textContent=tradeType==='buy'?'實際支出':'實際到手';
+  document.getElementById('fp-tot').textContent='$'+Math.round(total).toLocaleString();
+}
+function addTrade(){
+  const date=document.getElementById('s-date').value,name=document.getElementById('s-name').value.trim().toUpperCase();
+  const price=parseFloat(document.getElementById('s-price').value),qty=parseInt(document.getElementById('s-qty').value);
+  if(!name||!price||!qty||!date)return toast('請填寫完整資訊');
+  if(!stocks[name])stocks[name]={trades:[],dividends:[],currentPrice:price};
+  const fee=tradeType==='buy'?buyFee(price,qty):sellFee(price,qty),tax=tradeType==='sell'?sellTax(price,qty):0;
+  stocks[name].trades.push({id:Date.now(),date,type:tradeType,price,qty,fee,tax});
+  ['s-name','s-price','s-qty'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fee-box').style.display='none';
+  save();toast(tradeType==='buy'?'📈 買入已記錄':'📉 賣出已記錄');
+}
+
+// Stock helpers
+function heldQty(n){let q=0;(stocks[n]?.trades||[]).forEach(t=>q+=t.type==='buy'?t.qty:-t.qty);(stocks[n]?.dividends||[]).filter(d=>d.type==='stock').forEach(d=>q+=d.shares);return Math.max(0,q);}
+function totalBuyCost(n){return(stocks[n]?.trades||[]).filter(t=>t.type==='buy').reduce((s,t)=>s+t.price*t.qty+t.fee,0);}
+function avgCost(n){let cost=0,qty=0;(stocks[n]?.trades||[]).forEach(t=>{if(t.type==='buy'){cost+=t.price*t.qty+t.fee;qty+=t.qty;}});(stocks[n]?.dividends||[]).filter(d=>d.type==='stock').forEach(d=>qty+=d.shares);return qty>0?cost/qty:0;}
+function realizedPL(n){let pl=0;const avg=avgCost(n);(stocks[n]?.trades||[]).filter(t=>t.type==='sell').forEach(t=>{pl+=(t.price*t.qty-t.fee-t.tax)-avg*t.qty;});return pl;}
+function cashDivTotal(n){return(stocks[n]?.dividends||[]).filter(d=>d.type==='cash').reduce((s,d)=>s+d.amount,0);}
+function breakevenPrice(n){const q=heldQty(n),avg=avgCost(n);return q>0?avg/(1-0.001425-0.003):0;}
+
+function setDivType(t){divType=t;document.getElementById('dt-cash').className='dt-btn'+(t==='cash'?' ac-cash':'');document.getElementById('dt-stk').className='dt-btn'+(t==='stock'?' ac-stk':'');document.getElementById('di-cash').style.display=t==='cash'?'block':'none';document.getElementById('di-stk').style.display=t==='stock'?'block':'none';}
+function fillDivSelect(){const sel=document.getElementById('div-stock');sel.innerHTML='<option value="">選擇持股</option>';Object.keys(stocks).forEach(n=>{if(heldQty(n)>0)sel.innerHTML+=`<option value="${n}">${n}（持有${heldQty(n)}股）</option>`;});}
+function addDividend(){
+  const sn=document.getElementById('div-stock').value,date=document.getElementById('div-date').value;
+  if(!sn)return toast('請選擇股票');
+  if(divType==='cash'){const amt=parseFloat(document.getElementById('div-amt').value);if(!amt)return toast('請輸入股利金額');stocks[sn].dividends.push({id:Date.now(),date,type:'cash',amount:amt});document.getElementById('div-amt').value='';toast('💰 現金股利已記錄');}
+  else{const shr=parseInt(document.getElementById('div-shr').value);if(!shr)return toast('請輸入配股股數');stocks[sn].dividends.push({id:Date.now(),date,type:'stock',shares:shr});document.getElementById('div-shr').value='';toast('📊 配股已加入持倉');}
+  save();
+}
+
+function setIntType(t){intType=t;document.getElementById('it-simple').classList.toggle('active',t==='simple');document.getElementById('it-cmpd').classList.toggle('active',t==='compound');document.getElementById('cmpd-opts').style.display=t==='compound'?'block':'none';calcSavPreview();}
+function calcInterest(amt,rate,days,type,freq=12){const r=rate/100,t=days/365;return type==='compound'?amt*(Math.pow(1+r/freq,freq*t)-1):amt*r*t;}
+function calcSavPreview(){
+  const amt=parseFloat(document.getElementById('v-amt').value),rate=parseFloat(document.getElementById('v-rate').value);
+  const start=document.getElementById('v-start').value,end=document.getElementById('v-end').value;
+  const pv=document.getElementById('sav-preview');
+  if(!amt||!rate||!start||!end){pv.style.display='none';return;}
+  const days=Math.max(0,Math.round((new Date(end)-new Date(start))/86400000));
+  const freq=parseInt(document.getElementById('v-freq').value)||12;
+  pv.style.display='block';
+  document.getElementById('sp-days').textContent=days+'天';
+  document.getElementById('sp-ann').textContent='$'+Math.round(calcInterest(amt,rate,365,intType,freq)).toLocaleString();
+  document.getElementById('sp-int').textContent='$'+Math.round(calcInterest(amt,rate,days,intType,freq)).toLocaleString();
+  document.getElementById('sp-tot').textContent='$'+Math.round(amt+calcInterest(amt,rate,days,intType,freq)).toLocaleString();
+}
+function addSaving(){
+  const name=document.getElementById('v-name').value.trim(),amt=parseFloat(document.getElementById('v-amt').value);
+  const rate=parseFloat(document.getElementById('v-rate').value),start=document.getElementById('v-start').value,end=document.getElementById('v-end').value;
+  if(!name||!amt||!rate||!start||!end)return toast('請填寫完整資訊');
+  savings.push({id:Date.now(),name,amount:amt,rate,start,end,intType,freq:parseInt(document.getElementById('v-freq').value)||12});
+  ['v-name','v-amt','v-rate','v-end'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('sav-preview').style.display='none';
+  save();toast('💎 存款已記錄');
+}
+
+function openRollover(id){
+  curRollSav=savings.find(s=>s.id===id);if(!curRollSav)return;
+  document.getElementById('roll-name').textContent=curRollSav.name+' — $'+curRollSav.amount.toLocaleString();
+  document.getElementById('roll-rate').value=curRollSav.rate;
+  const def=new Date(curRollSav.end);def.setFullYear(def.getFullYear()+5);
+  document.getElementById('roll-end').value=def.toISOString().split('T')[0];
+  setRollIT('simple');openModal('modal-rollover');runRollover();
+}
+function setRollIT(t){rollIT=t;document.getElementById('ri-s').classList.toggle('active',t==='simple');document.getElementById('ri-c').classList.toggle('active',t==='compound');document.getElementById('roll-cmpd-opts').style.display=t==='compound'?'block':'none';runRollover();}
+function runRollover(){
+  if(!curRollSav)return;
+  const endVal=document.getElementById('roll-end').value,rate=parseFloat(document.getElementById('roll-rate').value);
+  if(!endVal||!rate)return;
+  const freq=parseInt(document.getElementById('roll-freq').value)||12;
+  const startD=new Date(curRollSav.end),endD=new Date(endVal);
+  if(endD<=startD)return;
+  const p=curRollSav.amount,r=rate/100,totalDays=Math.round((endD-startD)/86400000);
+  const labels=[],values=[];let d=new Date(startD);
+  while(d<=endD&&labels.length<72){
+    const days=Math.round((d-startD)/86400000),t=days/365;
+    values.push(Math.round(rollIT==='simple'?p*(1+r*t):p*Math.pow(1+r/freq,freq*t)));
+    labels.push(d.toISOString().substring(0,7));d.setMonth(d.getMonth()+1);
+  }
+  const finalT=totalDays/365,finalTot=rollIT==='simple'?p*(1+r*finalT):p*Math.pow(1+r/freq,freq*finalT);
+  document.getElementById('roll-result').innerHTML=`<div class="rounded-2xl p-3 text-xs space-y-1.5" style="background:#f5eeff;"><div class="flex justify-between text-slate-500"><span>模擬天數</span><span class="font-bold">${totalDays}天</span></div><div class="flex justify-between text-slate-500"><span>年利率</span><span class="font-bold">${rate}% (${rollIT==='compound'?'複利':'單利'})</span></div><div class="flex justify-between text-slate-500"><span>預計利息</span><span class="font-bold text-emerald-500">+$${Math.round(finalTot-p).toLocaleString()}</span></div><div class="hr"></div><div class="flex justify-between text-violet-600 font-bold"><span>到期金額</span><span class="text-base">$${Math.round(finalTot).toLocaleString()}</span></div></div>`;
+  if(cRoll)cRoll.destroy();
+  const ctx=document.getElementById('chart-roll').getContext('2d');
+  const step=Math.max(1,Math.floor(labels.length/8));
+  cRoll=new Chart(ctx,{type:'line',data:{labels:labels.filter((_,i)=>i%step===0||i===labels.length-1),datasets:[{data:values.filter((_,i)=>i%step===0||i===values.length-1),borderColor:'#a855f7',backgroundColor:'rgba(168,85,247,.1)',fill:true,tension:.4,pointRadius:3,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},maxTicksLimit:5}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{size:10},callback:v=>'$'+Math.round(v/1000)+'k'}}}}});
+}
+
+function addCard(){
+  const name=document.getElementById('cc-name').value.trim(),due=parseInt(document.getElementById('cc-due').value),limit=parseFloat(document.getElementById('cc-limit').value)||0;
+  if(!name||!due)return toast('請填寫卡片名稱和繳款日');
+  cards.push({id:Date.now(),name,due,limit,spending:[]});
+  ['cc-name','cc-due','cc-limit'].forEach(id=>document.getElementById(id).value='');
+  save();toast('💳 信用卡已新增');
+}
+function openCardSpend(id){
+  curCCId=id;const c=cards.find(c=>c.id===id);if(!c)return;
+  document.getElementById('cc-spend-name').textContent=c.name;
+  document.getElementById('cc-spend-amt').value='';document.getElementById('cc-spend-due-amt').value='';
+  document.getElementById('cc-spend-month').value=nowMonth;openModal('modal-cc-spend');
+}
+function saveCardSpend(){
+  const c=cards.find(c=>c.id===curCCId);if(!c)return;
+  const amt=parseFloat(document.getElementById('cc-spend-amt').value)||0,month=document.getElementById('cc-spend-month').value;
+  const dueAmt=parseFloat(document.getElementById('cc-spend-due-amt').value)||amt;
+  c.spending=c.spending.filter(s=>s.month!==month);c.spending.push({month,amount:amt,dueAmount:dueAmt});
+  c.spending.sort((a,b)=>a.month.localeCompare(b.month));
+  save();closeModal('modal-cc-spend');toast('💳 消費紀錄已更新');
+}
+
+function getActiveCats(){const mode=MODES.find(m=>m.id===budgetMode.modeId)||MODES[4];return[...JSON.parse(JSON.stringify(mode.cats)),...(budgetMode.customCats||[])];}
+function calcBudget(){income.salary=parseFloat(document.getElementById('inc-salary').value)||0;income.other=parseFloat(document.getElementById('inc-other').value)||0;localStorage.setItem(K.income,JSON.stringify(income));renderBudget();}
+function selectMode(id){budgetMode.modeId=id;localStorage.setItem(K.budget,JSON.stringify(budgetMode));renderModeList();renderBudget();}
+function addCustomCat(){
+  const name=document.getElementById('cat-name').value.trim(),pct=parseFloat(document.getElementById('cat-pct').value)||5,emoji=document.getElementById('cat-emoji').value||'📦';
+  if(!name)return toast('請輸入分類名稱');
+  if(!budgetMode.customCats)budgetMode.customCats=[];
+  budgetMode.customCats.push({n:name,e:emoji,p:pct,id:Date.now()});
+  localStorage.setItem(K.budget,JSON.stringify(budgetMode));
+  closeModal('modal-custom-cat');['cat-name','cat-pct','cat-emoji'].forEach(id=>document.getElementById(id).value='');
+  renderBudget();toast('✅ 分類已加入');
+}
+function delCustomCat(id){budgetMode.customCats=(budgetMode.customCats||[]).filter(c=>c.id!==id);localStorage.setItem(K.budget,JSON.stringify(budgetMode));renderBudget();}
+
+function addReminder(){
+  const title=document.getElementById('rem-title').value.trim(),date=document.getElementById('rem-date').value,note=document.getElementById('rem-note').value.trim();
+  if(!title||!date)return toast('請填寫標題和日期');
+  reminders.push({id:Date.now(),title,date,note});
+  ['rem-title','rem-note'].forEach(id=>document.getElementById(id).value='');
+  save();toast('⏰ 提醒已設定');
+}
+
+function save(){
+  localStorage.setItem(K.stocks,JSON.stringify(stocks));localStorage.setItem(K.savings,JSON.stringify(savings));
+  localStorage.setItem(K.rems,JSON.stringify(reminders));localStorage.setItem(K.cards,JSON.stringify(cards));
+  autoHistory();render();
+}
+function autoHistory(){
+  const sv=savings.reduce((s,r)=>s+r.amount,0);let stk=0;Object.keys(stocks).forEach(n=>stk+=(stocks[n].currentPrice||0)*heldQty(n));
+  const total=sv+stk,td=new Date().toISOString().split('T')[0],last=history[history.length-1];
+  if(!last||last.date!==td||Math.abs(last.total-total)>0.5){history=history.filter(h=>h.date!==td);history.push({date:td,total,savings:sv,stocks:stk});if(history.length>730)history=history.slice(-730);localStorage.setItem(K.hist,JSON.stringify(history));}
+}
+function exportData(){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify({stocks,savings,goal,goalMonthly,history,reminders,cards,budgetMode,income,exported:new Date().toISOString()},null,2)],{type:'application/json'}));
+  a.download='ck-asset-'+today+'.json';a.click();toast('✅ 備份匯出成功');
+}
+function importData(input){
+  const r=new FileReader();r.onload=e=>{try{const d=JSON.parse(e.target.result);if(confirm('確認匯入？將覆蓋現有資料。')){stocks=d.stocks||{};savings=d.savings||[];goal=d.goal||3000000;goalMonthly=d.goalMonthly||0;history=d.history||[];reminders=d.reminders||[];cards=d.cards||[];budgetMode=d.budgetMode||{modeId:'5030',customCats:[]};income=d.income||{salary:0,other:0};save();toast('✅ 匯入成功');}}catch{toast('❌ 檔案格式錯誤');}};r.readAsText(input.files[0]);
+}
+function clearAll(){if(confirm('⚠️ 確定要清空全部資料？\n\n此操作無法復原，建議先匯出備份。'))if(confirm('再次確認：真的要刪除所有資產紀錄嗎？'))Object.values(K).forEach(k=>localStorage.removeItem(k)),location.reload();}
+function saveGoal(){goal=parseFloat(document.getElementById('g-amt').value)||3000000;goalMonthly=parseFloat(document.getElementById('g-monthly').value)||0;localStorage.setItem(K.goal,goal);localStorage.setItem(K.gmonth,goalMonthly);closeModal('modal-goal');render();toast('🎯 目標已更新');}
+function openModal(id){const m=document.getElementById(id);m.classList.add('open');if(id==='modal-goal'){document.getElementById('g-amt').value=goal;document.getElementById('g-monthly').value=goalMonthly||'';}}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-ov').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+function setTR(m){trendRange=m;['tr-1m','tr-3m','tr-6m','tr-1y','tr-all'].forEach(id=>document.getElementById(id).classList.remove('active'));({1:'tr-1m',3:'tr-3m',6:'tr-6m',12:'tr-1y',0:'tr-all'})[m]&&document.getElementById(({1:'tr-1m',3:'tr-3m',6:'tr-6m',12:'tr-1y',0:'tr-all'})[m]).classList.add('active');renderTrends();}
+function filteredHist(){if(trendRange===0)return history;const cut=new Date();cut.setMonth(cut.getMonth()-trendRange);return history.filter(h=>new Date(h.date)>=cut);}
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500);}
+function tog(id){document.getElementById(id)?.classList.toggle('open');}
+
+function getPassive(){const annInt=savings.reduce((s,r)=>s+calcInterest(r.amount,r.rate,365,r.intType||'simple',r.freq||12),0);const totalDiv=Object.keys(stocks).reduce((s,n)=>s+cashDivTotal(n),0);return{annInt,totalDiv,monthly:(annInt+totalDiv)/12};}
+
+function render(){renderOverview();renderStocks();renderSavings();renderTrends();renderReminders();renderModeList();renderBudget();renderCards();renderAlertBadge();}
+
+function renderOverview(){
+  const sv=savings.reduce((s,r)=>s+r.amount,0);const{annInt,monthly}=getPassive();
+  let stkMkt=0,stkCost=0,stkCnt=0;Object.keys(stocks).forEach(n=>{const q=heldQty(n);if(q>0){stkMkt+=(stocks[n].currentPrice||0)*q;stkCost+=avgCost(n)*q;stkCnt++;}});
+  const total=sv+stkMkt,unreal=stkMkt-stkCost,pct=Math.min(total/goal*100,100);
+  let eta='請修改目標設定月均儲蓄';if(total>=goal)eta='🎉 已達標！';else if(goalMonthly>0){const m=Math.ceil((goal-total)/goalMonthly);const d=new Date();d.setMonth(d.getMonth()+m);eta=d.toLocaleDateString('zh-TW',{year:'numeric',month:'long'});}
+  document.getElementById('ov-total').textContent='$'+Math.round(total).toLocaleString();
+  document.getElementById('ov-sav').textContent='$'+Math.round(sv).toLocaleString();
+  document.getElementById('ov-ann-int').textContent='$'+Math.round(annInt).toLocaleString();
+  document.getElementById('ov-stk-mkt').textContent='$'+Math.round(stkMkt).toLocaleString();
+  document.getElementById('ov-stk-cnt').textContent=stkCnt;
+  document.getElementById('ov-unreal').textContent=(unreal>=0?'+':'')+Math.round(unreal).toLocaleString();
+  document.getElementById('ov-unreal').className='text-xl font-black '+(unreal>=0?'c-profit':'c-loss');
+  document.getElementById('ov-passive').textContent='$'+Math.round(monthly).toLocaleString();
+  document.getElementById('ov-pct').textContent=pct.toFixed(1)+'%';
+  document.getElementById('ov-goal').textContent=goal.toLocaleString();
+  document.getElementById('ov-eta').textContent=eta;
+  setTimeout(()=>document.getElementById('prog-bar').style.width=pct+'%',100);
+  if(cAlloc)cAlloc.destroy();
+  const actx=document.getElementById('chart-alloc').getContext('2d');
+  cAlloc=new Chart(actx,{type:'doughnut',data:{labels:['存款','股票'],datasets:[{data:total>0?[sv,stkMkt]:[1,0],backgroundColor:['#a855f7','#f472b6'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' $'+Math.round(c.raw).toLocaleString()}}}}});
+  const sp=total>0?(sv/total*100).toFixed(1):0,tp=total>0?(stkMkt/total*100).toFixed(1):0;
+  document.getElementById('alloc-legend').innerHTML=`<div class="space-y-3"><div class="flex items-center gap-2"><div style="width:9px;height:9px;border-radius:50%;background:#a855f7;flex-shrink:0;"></div><div><div class="text-xs font-bold text-slate-700">存款</div><div class="text-[10px] text-slate-400">${sp}% — $${Math.round(sv).toLocaleString()}</div></div></div><div class="flex items-center gap-2"><div style="width:9px;height:9px;border-radius:50%;background:#f472b6;flex-shrink:0;"></div><div><div class="text-xs font-bold text-slate-700">股票</div><div class="text-[10px] text-slate-400">${tp}% — $${Math.round(stkMkt).toLocaleString()}</div></div></div></div>`;
+  if(cHist)cHist.destroy();
+  const hctx=document.getElementById('chart-hist').getContext('2d'),h=history.slice(-60);
+  const grad=hctx.createLinearGradient(0,0,0,150);grad.addColorStop(0,'rgba(168,85,247,.2)');grad.addColorStop(1,'rgba(168,85,247,0)');
+  cHist=new Chart(hctx,{type:'line',data:{labels:h.map(p=>p.date.substring(5)),datasets:[{data:h.map(p=>p.total),borderColor:'#a855f7',backgroundColor:grad,fill:true,tension:.4,pointRadius:h.length>20?0:3,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},maxTicksLimit:5}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{size:10},callback:v=>'$'+Math.round(v/1000)+'k'}}}}});
+  const now=new Date(),alerts=[];
+  savings.forEach(s=>{const d=Math.round((new Date(s.end)-now)/86400000);if(d>=0&&d<=30)alerts.push({title:s.name+'定存到期',days:d,color:d<=7?'#dc2626':'#d97706'});});
+  cards.forEach(c=>{const t=new Date();let nd=new Date(t.getFullYear(),t.getMonth(),c.due);if(nd<t)nd=new Date(t.getFullYear(),t.getMonth()+1,c.due);const d=Math.round((nd-t)/86400000);if(d<=5)alerts.push({title:c.name+'繳款',days:d,color:'#2563eb'});});
+  document.getElementById('ov-alerts').innerHTML=alerts.slice(0,4).map(a=>`<div class="card p-3 flex items-center gap-3"><div style="width:8px;height:8px;border-radius:50%;background:${a.color};flex-shrink:0;"></div><p class="text-xs font-bold flex-1">${a.title}</p><p class="text-[10px] font-bold" style="color:${a.color}">${a.days===0?'今天':a.days+'天後'}</p></div>`).join('');
+}
+
+function renderStocks(){
+  let totCost=0,totMkt=0,totReal=0,html='';
+  for(let name in stocks){
+    const s=stocks[name],q=heldQty(name),avg=avgCost(name),mkt=(s.currentPrice||0)*q,unreal=mkt-avg*q,real=realizedPL(name);
+    const roi=avg>0&&q>0?(unreal/(avg*q))*100:0,be=breakevenPrice(name),div=cashDivTotal(name);
+    const yieldPct=avg>0&&q>0?(div/(avg*q)*100).toFixed(2):0;
+    totCost+=totalBuyCost(name);totMkt+=mkt;totReal+=real;
+    html+=`<div class="card overflow-hidden"><div style="background:linear-gradient(135deg,#fff0f9,#f5eeff);padding:14px 16px;border-bottom:1px solid rgba(244,114,182,.08);"><div class="flex justify-between items-start"><div><h4 class="font-black text-lg text-slate-800">${name}</h4><p class="text-[9px] text-slate-400">持有${q.toLocaleString()}股 ｜ 買${s.trades.filter(t=>t.type==='buy').length}次 賣${s.trades.filter(t=>t.type==='sell').length}次</p></div><div class="text-right"><p class="text-[9px] text-slate-400 mb-0.5">現價（點擊更新）</p><input type="number" value="${s.currentPrice||0}" onchange="updatePrice('${name}',this.value)" class="w-20 text-right font-black text-blue-500 bg-white border border-blue-100 rounded-xl px-2 py-1 text-sm" style="outline:none;"></div></div></div>
+    <div class="p-4 space-y-3"><div class="grid grid-cols-2 gap-3"><div class="rounded-2xl p-3" style="background:#fafafa;"><p class="text-[8px] text-slate-400 uppercase mb-1">未實現損益</p><p class="font-black text-base ${unreal>=0?'c-profit':'c-loss'}">${unreal>=0?'+':''}${Math.round(unreal).toLocaleString()}</p><p class="text-[10px] ${unreal>=0?'c-profit':'c-loss'}">${roi>=0?'+':''}${roi.toFixed(2)}%</p></div><div class="rounded-2xl p-3" style="background:#fafafa;"><p class="text-[8px] text-slate-400 uppercase mb-1">已實現損益</p><p class="font-black text-base ${real>=0?'c-profit':'c-loss'}">${real>=0?'+':''}${Math.round(real).toLocaleString()}</p><p class="text-[10px] text-slate-400">含費稅</p></div></div>
+    <div><div class="drow"><span class="text-slate-400 text-xs">平均成本/股</span><span class="font-bold text-sm">$${avg.toFixed(2)}</span></div><div class="drow"><span class="text-slate-400 text-xs">損益兩平價（賣出含費稅）</span><span class="font-bold text-sm text-orange-500">$${be.toFixed(2)}</span></div><div class="drow"><span class="text-slate-400 text-xs">目前市值</span><span class="font-bold text-sm">$${Math.round(mkt).toLocaleString()}</span></div>${div>0?`<div class="drow"><span class="text-slate-400 text-xs">累計現金股利</span><span class="font-bold text-sm text-emerald-500">+$${div.toLocaleString()} <span class="text-[10px]">(殖利率${yieldPct}%)</span></span></div>`:''}</div>
+    <div class="flex gap-2"><button onclick="tog('tr-${name}')" class="btn-outline flex-1 text-center text-xs py-2">▸ 交易(${s.trades.length}筆)</button>${s.dividends.length>0?`<button onclick="tog('dv-${name}')" class="btn-outline flex-1 text-center text-xs py-2">▸ 股息(${s.dividends.length}筆)</button>`:''}</div>
+    <div id="tr-${name}" class="collapse-body space-y-1.5">${s.trades.map(t=>`<div class="trade-item"><span class="${t.type==='buy'?'tg-green':'tg-red'} tag">${t.type==='buy'?'買':'賣'}</span><span>${t.date}</span><span class="font-bold">$${t.price}×${t.qty}</span><span class="text-slate-400">費$${t.fee}${t.type==='sell'?' 稅$'+t.tax:''}</span><button onclick="delTrade('${name}',${t.id})" class="text-slate-300 hover:text-red-400 ml-auto flex-shrink-0">✕</button></div>`).join('')}</div>
+    ${s.dividends.length>0?`<div id="dv-${name}" class="collapse-body space-y-1.5">${s.dividends.map(d=>`<div class="trade-item"><span class="${d.type==='cash'?'tg-pink':'tg-violet'} tag">${d.type==='cash'?'💰':'📊'}</span><span>${d.date}</span><span class="font-bold">${d.type==='cash'?'+$'+d.amount.toLocaleString():'+'+d.shares+'股'}</span><button onclick="delDiv('${name}',${d.id})" class="text-slate-300 hover:text-red-400 ml-auto">✕</button></div>`).join('')}</div>`:''}
+    <button onclick="if(confirm('刪除${name}所有紀錄？')){delete stocks['${name}'];save();}" class="text-[10px] text-slate-200 hover:text-red-400 transition pt-1">🗑 刪除此股票</button></div></div>`;
+  }
+  document.getElementById('stock-list').innerHTML=html||'<div class="card p-8 text-center text-slate-300 text-sm">尚未加入投資紀錄<br><span class="text-xs">點「新增交易」開始記錄</span></div>';
+  document.getElementById('s-cost').textContent='$'+Math.round(totCost).toLocaleString();
+  document.getElementById('s-mkt').textContent='$'+Math.round(totMkt).toLocaleString();
+  document.getElementById('s-real').textContent=(totReal>=0?'+':'')+Math.round(totReal).toLocaleString();
+  document.getElementById('s-real').className='font-bold text-sm '+(totReal>=0?'c-profit':'c-loss');
+  let dHtml='';Object.keys(stocks).forEach(n=>(stocks[n].dividends||[]).slice().reverse().forEach(d=>{dHtml+=`<div class="card p-3 flex justify-between items-center text-sm"><div class="flex items-center gap-2"><span class="font-bold">${n}</span><span class="text-[10px] text-slate-400">${d.date}</span><span class="tag ${d.type==='cash'?'tg-green':'tg-violet'}">${d.type==='cash'?'現金':'配股'}</span></div><span class="font-bold ${d.type==='cash'?'text-emerald-500':'text-violet-500'}">${d.type==='cash'?'+$'+d.amount.toLocaleString():'+'+d.shares+'股'}</span></div>`;}));
+  document.getElementById('div-list').innerHTML=dHtml||'<p class="text-center text-slate-300 text-sm py-4">尚未記錄股息</p>';
+}
+
+function renderSavings(){
+  const now=new Date();let total=0,annTotal=0,expCnt=0,html='';
+  [...savings].sort((a,b)=>new Date(a.end)-new Date(b.end)).forEach(s=>{
+    const dLeft=Math.round((new Date(s.end)-now)/86400000),days=Math.round((new Date(s.end)-new Date(s.start))/86400000);
+    const interest=calcInterest(s.amount,s.rate,days,s.intType||'simple',s.freq||12),annInt=calcInterest(s.amount,s.rate,365,s.intType||'simple',s.freq||12);
+    total+=s.amount;annTotal+=annInt;const isExp=dLeft<0,isNear=dLeft>=0&&dLeft<=30;if(isNear&&!isExp)expCnt++;
+    const cls=isExp?'sav-card expired':isNear?'sav-card expiring':'sav-card';
+    const badge=isExp?'<span class="tag tg-red">已到期</span>':isNear?`<span class="tag tg-gold">⚠️ ${dLeft}天到期</span>`:`<span class="tag tg-violet">${dLeft}天後到期</span>`;
+    html+=`<div class="${cls}"><div class="flex justify-between items-start mb-2"><div><h4 class="font-bold text-slate-800">${s.name}</h4><p class="text-[9px] text-slate-400">${s.start} → ${s.end} ｜ ${s.intType==='compound'?'複利':'單利'}</p></div><div>${badge}</div></div><div class="hr"></div><div class="grid grid-cols-3 gap-2 text-center mb-3"><div><p class="text-[8px] text-slate-400">存入金額</p><p class="text-sm font-black text-violet-600">$${s.amount.toLocaleString()}</p></div><div><p class="text-[8px] text-slate-400">年利率</p><p class="text-sm font-black">${s.rate}%</p></div><div><p class="text-[8px] text-slate-400">到期利息</p><p class="text-sm font-black text-emerald-500">+$${Math.round(interest).toLocaleString()}</p></div></div><div class="rounded-2xl p-2.5 text-xs text-slate-400 mb-3" style="background:#fafafa;">年息 $${Math.round(annInt).toLocaleString()} ｜ 到期可領 $${Math.round(s.amount+interest).toLocaleString()}</div><div class="flex gap-2"><button onclick="openRollover(${s.id})" class="btn-outline flex-1 text-center">🔄 滾存模擬</button><button onclick="delSaving(${s.id})" class="text-slate-300 hover:text-red-400 px-3 transition text-lg">✕</button></div></div>`;
+  });
+  document.getElementById('saving-list').innerHTML=html||'<div class="card p-8 text-center text-slate-300 text-sm">尚未加入存款紀錄</div>';
+  document.getElementById('sv-total').textContent='$'+Math.round(total).toLocaleString();
+  document.getElementById('sv-annual').textContent='$'+Math.round(annTotal).toLocaleString();
+  document.getElementById('sv-exp').textContent=expCnt+'個';
+}
+
+function renderTrends(){
+  const h=filteredHist(),ls=h.map(p=>p.date.substring(5)),step=Math.max(1,Math.floor(ls.length/10));
+  const mk=(id,data,color,ex)=>{if(ex)ex.destroy();const ctx=document.getElementById(id).getContext('2d');const g=ctx.createLinearGradient(0,0,0,150);g.addColorStop(0,color+'33');g.addColorStop(1,color+'00');return new Chart(ctx,{type:'line',data:{labels:ls.filter((_,i)=>i%step===0||i===ls.length-1),datasets:[{data:data.filter((_,i)=>i%step===0||i===data.length-1),borderColor:color,backgroundColor:g,fill:true,tension:.4,pointRadius:ls.length>20?0:3,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},maxTicksLimit:6}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{size:10},callback:v=>'$'+Math.round(v/1000)+'k'}}}}});};
+  cNW=mk('ct-nw',h.map(p=>p.total),'#a855f7',cNW);cSV=mk('ct-sv',h.map(p=>p.savings||0),'#f472b6',cSV);cSTK=mk('ct-stk',h.map(p=>p.stocks||0),'#60a5fa',cSTK);
+  const{monthly}=getPassive();cPass=mk('ct-pass',h.map(()=>Math.round(monthly)),'#34d399',cPass);
+}
+
+function renderReminders(){
+  const now=new Date();
+  let cHtml='';cards.length===0?cHtml='<p class="text-slate-300 text-sm text-center py-3">尚未新增信用卡</p>':cards.forEach(c=>{const t=new Date();let nd=new Date(t.getFullYear(),t.getMonth(),c.due);if(nd<t)nd=new Date(t.getFullYear(),t.getMonth()+1,c.due);const d=Math.round((nd-t)/86400000);const color=d<=3?'#dc2626':d<=7?'#d97706':'#2563eb';const ls=c.spending&&c.spending.length>0?c.spending[c.spending.length-1]:null;cHtml+=`<div class="card p-4 flex items-center gap-3"><div style="width:8px;height:8px;border-radius:50%;background:${color};flex-shrink:0;"></div><div class="flex-1"><p class="font-bold text-sm">${c.name}</p><p class="text-[9px] text-slate-400">每月${c.due}日繳款${ls?' ｜ 上期消費$'+ls.amount.toLocaleString():''}</p></div><p class="text-xs font-bold" style="color:${color}">${d===0?'今天繳':d+'天後'}</p></div>`;});
+  document.getElementById('rem-cards').innerHTML=cHtml;
+  let sHtml='';const expSavs=[...savings].sort((a,b)=>new Date(a.end)-new Date(b.end)).filter(s=>Math.round((new Date(s.end)-now)/86400000)<=60);
+  expSavs.length===0?sHtml='<p class="text-slate-300 text-sm text-center py-3">60天內無定存到期</p>':expSavs.forEach(s=>{const d=Math.round((new Date(s.end)-now)/86400000);const color=d<0?'#dc2626':d<=7?'#dc2626':'#d97706';const label=d<0?`已於${Math.abs(d)}天前到期`:d===0?'今天到期':`${d}天後到期`;sHtml+=`<div class="card p-4 flex items-center gap-3"><div style="width:8px;height:8px;border-radius:50%;background:${color};flex-shrink:0;"></div><div class="flex-1"><p class="font-bold text-sm">${s.name}</p><p class="text-[9px] text-slate-400">$${s.amount.toLocaleString()} ｜ ${s.rate}% ｜ ${s.end}</p></div><p class="text-xs font-bold" style="color:${color}">${label}</p></div>`;});
+  document.getElementById('rem-sav').innerHTML=sHtml;
+  const sv=savings.reduce((s,r)=>s+r.amount,0);let stkMkt=0;Object.keys(stocks).forEach(n=>stkMkt+=(stocks[n].currentPrice||0)*heldQty(n));
+  const total=sv+stkMkt,pct=Math.min(total/goal*100,100),remain=Math.max(0,goal-total),months=goalMonthly>0?Math.ceil(remain/goalMonthly):null;
+  document.getElementById('rem-goal').innerHTML=`<div class="flex justify-between text-sm mb-1"><span class="text-slate-500">進度</span><span class="font-bold text-violet-600">${pct.toFixed(2)}%</span></div><div class="prog-track mb-3"><div class="prog-fill" style="width:${pct}%"></div></div><div class="drow"><span class="text-slate-400 text-xs">目前資產</span><span class="font-bold text-xs">$${Math.round(total).toLocaleString()}</span></div><div class="drow"><span class="text-slate-400 text-xs">目標金額</span><span class="font-bold text-xs">$${goal.toLocaleString()}</span></div><div class="drow"><span class="text-slate-400 text-xs">距離目標</span><span class="font-bold text-xs text-pink-500">$${Math.round(remain).toLocaleString()}</span></div>${months?`<div class="drow"><span class="text-slate-400 text-xs">按月均儲蓄預計</span><span class="font-bold text-xs text-violet-500">還需 ${months} 個月</span></div>`:'<p class="text-[10px] text-slate-400 mt-2">→ 修改目標，設定月均儲蓄以預測達標日期</p>'}`;
+  document.getElementById('rem-custom').innerHTML=reminders.map(r=>{const d=Math.round((new Date(r.date)-now)/86400000);return`<div class="card p-4 flex items-center gap-3"><div style="width:8px;height:8px;border-radius:50%;background:#a855f7;flex-shrink:0;"></div><div class="flex-1"><p class="font-bold text-sm">${r.title}</p><p class="text-[9px] text-slate-400">${r.date}${r.note?' ｜ '+r.note:''}</p></div><div class="flex items-center gap-2"><p class="text-xs font-bold ${d<0?'text-red-400':'text-violet-500'}">${d<0?'已過期':d===0?'今天':d+'天後'}</p><button onclick="delReminder(${r.id})" class="text-slate-300 hover:text-red-400">✕</button></div></div>`;}).join('')||'<p class="text-slate-300 text-sm text-center py-3">尚未加入提醒</p>';
+}
+
+function renderModeList(){
+  document.getElementById('mode-list').innerHTML=MODES.map(m=>{const sel=budgetMode.modeId===m.id;return`<div class="mode-card ${sel?'selected':''}" onclick="selectMode('${m.id}')"><div class="flex justify-between items-start"><div><div class="font-bold text-sm text-slate-700">${m.name}</div><div class="text-[10px] text-slate-400 mt-0.5">${m.desc}</div></div>${sel?'<span class="tag tg-violet">✓ 使用中</span>':''}</div>${sel?`<div class="flex flex-wrap gap-1 mt-2">${m.cats.map(c=>`<span class="tag tg-pink">${c.e} ${c.n} ${c.p}%</span>`).join('')}</div>`:''}</div>`;}).join('');
+  if(income.salary)document.getElementById('inc-salary').value=income.salary;
+  if(income.other)document.getElementById('inc-other').value=income.other;
+}
+
+function renderBudget(){
+  const{annInt,totalDiv}=getPassive();
+  const monthlyInt=Math.round(annInt/12),monthlyDiv=Math.round(totalDiv/12);
+  document.getElementById('inc-div').textContent='$'+monthlyDiv.toLocaleString()+'/月';
+  document.getElementById('inc-int').textContent='$'+monthlyInt.toLocaleString()+'/月';
+  const salary=income.salary||0,other=income.other||0,totalInc=salary+other+monthlyInt+monthlyDiv;
+  document.getElementById('inc-total').textContent='$'+Math.round(totalInc).toLocaleString();
+  if(totalInc<=0){document.getElementById('budget-result').style.display='none';return;}
+  document.getElementById('budget-result').style.display='block';
+  const cats=getActiveCats(),totalPct=cats.reduce((s,c)=>s+c.p,0);
+  document.getElementById('budget-cats').innerHTML=cats.map((c,i)=>{const amt=Math.round(totalInc*c.p/totalPct);const isCustom=c.id!==undefined;return`<div class="cat-chip"><span>${c.e}</span><span class="flex-1 font-bold text-slate-700 text-xs">${c.n}</span><span class="text-[10px] text-slate-400 mr-1">${c.p}%</span><span class="font-black text-sm" style="color:${COLORS[i%COLORS.length]}">$${amt.toLocaleString()}</span>${isCustom?`<button onclick="delCustomCat(${c.id})" class="text-slate-300 hover:text-red-400 text-xs ml-2">✕</button>`:''}</div>`;}).join('');
+  if(cBudget)cBudget.destroy();
+  cBudget=new Chart(document.getElementById('chart-budget').getContext('2d'),{type:'doughnut',data:{labels:cats.map(c=>c.e+' '+c.n),datasets:[{data:cats.map(c=>c.p),backgroundColor:cats.map((_,i)=>COLORS[i%COLORS.length]),borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:10}},tooltip:{callbacks:{label:c=>{const amt=Math.round(totalInc*c.raw/totalPct);return` ${c.raw}% — $${amt.toLocaleString()}`;}}}}}});
+}
+
+function renderAnalysis(){
+  const{annInt,totalDiv,monthly}=getPassive();
+  const monthlyInt=annInt/12,monthlyDiv=totalDiv/12;
+  let pHtml='';
+  if(!savings.length&&!Object.keys(stocks).length){pHtml='<p class="text-slate-300 text-sm text-center py-4">尚無資料</p>';}
+  else{savings.forEach(s=>{const ai=calcInterest(s.amount,s.rate,365,s.intType||'simple',s.freq||12);pHtml+=`<div class="drow"><span class="text-xs text-slate-500">🏦 ${s.name}</span><span class="text-xs font-bold text-emerald-500">+$${Math.round(ai/12).toLocaleString()}/月</span></div>`;});Object.keys(stocks).forEach(n=>{const d=cashDivTotal(n);if(d>0)pHtml+=`<div class="drow"><span class="text-xs text-slate-500">📊 ${n} 股息</span><span class="text-xs font-bold text-pink-500">+$${Math.round(d/12).toLocaleString()}/月</span></div>`;});pHtml+=`<div class="hr"></div><div class="drow"><span class="text-xs font-bold text-slate-700">月均被動收入合計</span><span class="text-sm font-black text-violet-600">$${Math.round(monthly).toLocaleString()}</span></div>`;}
+  document.getElementById('passive-detail').innerHTML=pHtml;
+  const salary=income.salary||0,other=income.other||0,totalInc=salary+other+Math.round(monthlyInt)+Math.round(monthlyDiv);
+  if(cIncome)cIncome.destroy();
+  const incData=[salary,other,Math.round(monthlyInt),Math.round(monthlyDiv)];
+  const incLabels=['薪資收入','其他收入','利息收入','股息收入'];
+  const fData=incData.map((v,i)=>({v,l:incLabels[i]})).filter(x=>x.v>0);
+  cIncome=new Chart(document.getElementById('chart-income').getContext('2d'),{type:'doughnut',data:{labels:fData.map(x=>x.l),datasets:[{data:fData.map(x=>x.v),backgroundColor:['#a855f7','#60a5fa','#34d399','#f472b6'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:12}}}}});
+  const fiPct=totalInc>0?(monthly/totalInc*100).toFixed(1):0;
+  document.getElementById('fi-detail').innerHTML=`<div class="drow"><span class="text-xs text-slate-500">月收入合計</span><span class="font-bold text-xs">$${Math.round(totalInc).toLocaleString()}</span></div><div class="drow"><span class="text-xs text-slate-500">被動收入</span><span class="font-bold text-xs text-violet-600">$${Math.round(monthly).toLocaleString()}</span></div><div class="drow"><span class="text-xs text-slate-500">被動收入佔比</span><span class="font-bold text-xs ${parseFloat(fiPct)>=100?'c-profit':'text-slate-700'}">${fiPct}%</span></div><div class="prog-track mt-3"><div class="prog-fill" style="width:${Math.min(parseFloat(fiPct),100)}%;background:linear-gradient(90deg,#34d399,#a855f7);"></div></div><p class="text-[10px] text-slate-400 mt-2">${parseFloat(fiPct)>=100?'🎉 被動收入已超過總收入，恭喜達到財務自由！':'被動收入達到100%即為財務自由'}</p>`;
+}
+
+function renderCards(){
+  let html='';
+  cards.forEach(c=>{const t=new Date();let nd=new Date(t.getFullYear(),t.getMonth(),c.due);if(nd<t)nd=new Date(t.getFullYear(),t.getMonth()+1,c.due);const d=Math.round((nd-t)/86400000);const color=d<=3?'#dc2626':d<=7?'#d97706':'#2563eb';const ls=c.spending&&c.spending.length>0?c.spending[c.spending.length-1]:null;const hist=c.spending&&c.spending.length>1?[...c.spending].reverse().slice(0,4):[];
+  html+=`<div class="card p-5 space-y-3"><div class="flex justify-between items-start"><div><h4 class="font-bold text-slate-800">${c.name}</h4><p class="text-[9px] text-slate-400">每月${c.due}日繳款${c.limit?' ｜ 額度$'+c.limit.toLocaleString():''}</p></div><span class="text-xs font-bold px-3 py-1 rounded-full" style="background:rgba(37,99,235,.08);color:${color}">繳款日 ${d===0?'今天':d+'天後'}</span></div><div class="hr"></div><div class="grid grid-cols-2 gap-3"><div class="rounded-2xl p-3 text-center" style="background:#fafafa;"><p class="text-[8px] text-slate-400">本期消費</p><p class="font-black text-lg text-slate-700">${ls?'$'+ls.amount.toLocaleString():'—'}</p></div><div class="rounded-2xl p-3 text-center" style="background:#fafafa;"><p class="text-[8px] text-slate-400">應繳金額</p><p class="font-black text-lg text-blue-500">${ls?'$'+ls.dueAmount.toLocaleString():'—'}</p></div></div>${hist.length>1?`<div><p class="text-[9px] text-slate-400 mb-1">消費歷史</p>${hist.map(s=>`<div class="drow"><span class="text-xs text-slate-400">${s.month}</span><span class="font-bold text-xs">$${s.amount.toLocaleString()}</span><span class="text-xs text-blue-500">應繳$${s.dueAmount.toLocaleString()}</span></div>`).join('')}</div>`:''}<div class="flex gap-2"><button onclick="openCardSpend(${c.id})" class="btn-outline flex-1 text-center">📝 更新消費</button><button onclick="delCard(${c.id})" class="text-slate-300 hover:text-red-400 px-3 text-lg">✕</button></div></div>`;});
+  document.getElementById('card-list').innerHTML=html||'<div class="card p-8 text-center text-slate-300 text-sm">尚未新增信用卡</div>';
+}
+
+function renderAlertBadge(){
+  const now=new Date();let count=0;
+  savings.forEach(s=>{const d=Math.round((new Date(s.end)-now)/86400000);if(d>=0&&d<=7)count++;});
+  cards.forEach(c=>{const t=new Date();let nd=new Date(t.getFullYear(),t.getMonth(),c.due);if(nd<t)nd=new Date(t.getFullYear(),t.getMonth()+1,c.due);if(Math.round((nd-t)/86400000)<=3)count++;});
+  const b=document.getElementById('alert-badge');count>0?(b.style.display='block',b.textContent='⚠️ '+count+'則提醒'):b.style.display='none';
+}
+
+function updatePrice(name,val){if(stocks[name]){stocks[name].currentPrice=parseFloat(val)||0;save();}}
+function delTrade(name,id){stocks[name].trades=stocks[name].trades.filter(t=>t.id!==id);if(!stocks[name].trades.length&&!stocks[name].dividends.length)delete stocks[name];save();}
+function delDiv(name,id){stocks[name].dividends=stocks[name].dividends.filter(d=>d.id!==id);save();}
+function delSaving(id){savings=savings.filter(s=>s.id!==id);save();}
+function delCard(id){if(confirm('確定刪除此卡片？'))cards=cards.filter(c=>c.id!==id),save();}
+function delReminder(id){reminders=reminders.filter(r=>r.id!==id);save();}
+
+render();
+</script>
 </body>
 </html>
